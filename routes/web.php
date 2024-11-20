@@ -8,10 +8,11 @@ Route::get('/', function () {
     return view('home');
 });
 Route::get('/login', [UserManagementController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [UserManagementController::class, 'login']);
-Route::post('/logout', [UserManagementController::class, 'logout'])->name('logout');
+// Route untuk login
+Route::post('login', [UserManagementController::class, 'login'])->name('login');
 
-Route::get('/register', [UserManagementController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [UserManagementController::class, 'register']);
+// Route untuk registrasi
+Route::post('register', [UserManagementController::class, 'register'])->name('register');
+
 
 Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->middleware(['auth', 'CheckPermission:view_dashboard'])->name('dashboard');

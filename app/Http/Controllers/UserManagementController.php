@@ -13,7 +13,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class UserManagementController extends Controller
 {
@@ -22,10 +21,7 @@ class UserManagementController extends Controller
     {
         return view('auth.login&register');
     }
-    public function showRegistrationForm()
-    {
-        return view('auth.login&register');
-    }
+
     public function dashboard()
     {
         $data = [
@@ -39,27 +35,49 @@ class UserManagementController extends Controller
 
         return view('dashboard.index', $data);
     }
+    // Fungsi registrasi
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:2',
         ]);
 
+
+        // Membuat user baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // Menetapkan peran super_admin secara otomatis
-        $superAdminRole = Role::where('name', 'super_admin')->first(); // Menggunakan query builder
-        if ($superAdminRole) {
-            $user->roles()->attach($superAdminRole->id);
+        // Jika berhasil, redirect ke halaman lain
+        return response()->json([
+            'success' => true,
+            'message' => 'Registration successful',
+            'redirect' => route('login'), // Atau halaman yang sesuai
+        ]);
+
+    }
+
+    // Fungsi login
+    public function login(Request $request)
+    {
+        $credentials = $request->only('username', 'password');
+
+        if (Auth::attempt($credentials)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful.',
+                'redirect' => route('dashboard'),
+            ]);
         }
 
-        return redirect()->route('login')->with('success', 'Registration successful!');
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid credentials.',
+        ], 401);
     }
 
     public function assignRole(User $user, Request $request)
