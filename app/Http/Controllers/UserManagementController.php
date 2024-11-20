@@ -18,8 +18,9 @@ class UserManagementController extends Controller
     // ... CRUD methods ...
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('auth.login&register');
     }
+
     public function dashboard()
     {
         $data = [
@@ -33,6 +34,7 @@ class UserManagementController extends Controller
 
         return view('dashboard.index', $data);
     }
+
     public function assignRole(User $user, Request $request)
     {
         $role = Role::find($request->input('role_id'));
@@ -44,5 +46,4 @@ class UserManagementController extends Controller
 
         return redirect()->route('users.show', $user->id)->with('status', 'Role assigned successfully!');
     }
-
 }
