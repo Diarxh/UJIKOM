@@ -378,8 +378,8 @@
                 </div>
 
                 <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="text-center phone-mockup">
-                        <img src="assets/img/manajemen-sekolah-screen.jpg" alt="Phone Mockup" class="img-fluid">
+                    <div class="text-center phone-mockup" style="width: 100%; height=100vh">
+                        <img src="assets/img/manajemen-sekolah-screen.jpg" alt="Phone Mockup" class="img-fluid" style="width: 100%">
                         <!-- Ganti dengan gambar yang sesuai -->
                     </div>
                 </div><!-- End Phone Mockup -->

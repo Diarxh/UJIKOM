@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use function;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,5 +45,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // RELASI
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+    public function can($permission)
+    {
+        return $this->roles->contains('permissions', function ($permission_role) use ($permission) {
+            return $permission_role->name == $permission;
+        });
     }
 }
