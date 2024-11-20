@@ -12,6 +12,8 @@ use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class UserManagementController extends Controller
 {
@@ -20,7 +22,10 @@ class UserManagementController extends Controller
     {
         return view('auth.login&register');
     }
-
+    public function showRegistrationForm()
+    {
+        return view('auth.login&register');
+    }
     public function dashboard()
     {
         $data = [
@@ -33,6 +38,28 @@ class UserManagementController extends Controller
         ];
 
         return view('dashboard.index', $data);
+    }
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Menetapkan peran super_admin secara otomatis
+        $superAdminRole = Role::where('name', 'super_admin')->first(); // Menggunakan query builder
+        if ($superAdminRole) {
+            $user->roles()->attach($superAdminRole->id);
+        }
+
+        return redirect()->route('login')->with('success', 'Registration successful!');
     }
 
     public function assignRole(User $user, Request $request)

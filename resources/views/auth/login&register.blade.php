@@ -12,7 +12,8 @@
 <body>
     <div class="container">
         <div class="form-box login">
-            <form action="#">
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
                 <h1>Login</h1>
                 <div class="input-box">
                     <input type="text" placeholder="Username" required>
@@ -37,7 +38,7 @@
         </div>
 
         <div class="form-box register">
-            <form action="#">
+            <form action="{{ route('register') }}" method="POST">
                 <h1>Registration</h1>
                 <div class="input-box">
                     <input type="text" placeholder="Username" required>

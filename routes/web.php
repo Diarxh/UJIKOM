@@ -11,8 +11,7 @@ Route::get('/login', [UserManagementController::class, 'showLoginForm'])->name('
 Route::post('/login', [UserManagementController::class, 'login']);
 Route::post('/logout', [UserManagementController::class, 'logout'])->name('logout');
 
-// Jika registrasi diaktifkan:
 Route::get('/register', [UserManagementController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [UserManagementController::class, 'register']);
 
-Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [UserManagementController::class, 'dashboard'])->middleware(['auth', 'CheckPermission:view_dashboard'])->name('dashboard');
