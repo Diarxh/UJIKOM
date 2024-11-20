@@ -35,30 +35,38 @@ class UserManagementController extends Controller
 
         return view('dashboard.index', $data);
     }
+
     // Fungsi registrasi
     public function register(Request $request)
     {
+        \Log::info('Register Request', $request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:2',
         ]);
 
+        try {
+            // Membuat user baru
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        // Membuat user baru
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Jika berhasil, redirect ke halaman lain
-        return response()->json([
-            'success' => true,
-            'message' => 'Registration successful',
-            'redirect' => route('login'), // Atau halaman yang sesuai
-        ]);
-
+            // Jika berhasil, redirect ke halaman lain
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful.',
+                'redirect' => route('login'),
+            ], 200);
+        } catch (\Exception $e) {
+            // Jika gagal, kembalikan respons dengan error
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed. Please try again.',
+            ], 422);
+        }
     }
 
     // Fungsi login
@@ -80,15 +88,15 @@ class UserManagementController extends Controller
         ], 401);
     }
 
-    public function assignRole(User $user, Request $request)
-    {
-        $role = Role::find($request->input('role_id'));
-        if (!$role) {
-            return back()->withErrors(['role' => 'Role not found.']);
-        }
+    // public function assignRole(User $user, Request $request)
+    // {
+    //     $role = Role::find($request->input('role_id'));
+    //     if (!$role) {
+    //         return back()->withErrors(['role' => 'Role not found.']);
+    //     }
 
-        $user->roles()->syncWithoutDetaching([$role->id]);
+    //     $user->roles()->syncWithoutDetaching([$role->id]);
 
-        return redirect()->route('users.show', $user->id)->with('status', 'Role assigned successfully!');
-    }
+    //     return redirect()->route('users.show', $user->id)->with('status', 'Role assigned successfully!');
+    // }
 }

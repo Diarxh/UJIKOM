@@ -12,41 +12,41 @@ return new class extends Migration {
      */
     public function up()
     {
-        // Tabel roles
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->timestamps();
-        });
+        // // Tabel roles
+        // Schema::create('roles', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name')->unique();
+        //     $table->timestamps();
+        // });
 
-        // Tabel permissions
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->timestamps();
-        });
+        // // Tabel permissions
+        // Schema::create('permissions', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name')->unique();
+        //     $table->timestamps();
+        // });
 
-        // Tabel role_user untuk relasi many-to-many antara user dan role
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('role_id');
-            $table->timestamps();
+        // // Tabel role_user untuk relasi many-to-many antara user dan role
+        // Schema::create('role_user', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('role_id');
+        //     $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-        });
+        //     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        //     $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+        // });
 
-        // Tabel permission_role untuk relasi many-to-many antara role dan permission
-        Schema::create('permission_role', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('permission_id');
-            $table->unsignedBigInteger('role_id');
-            $table->timestamps();
+        // // Tabel permission_role untuk relasi many-to-many antara role dan permission
+        // Schema::create('permission_role', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('permission_id');
+        //     $table->unsignedBigInteger('role_id');
+        //     $table->timestamps();
 
-            $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
-        });
+        //     $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
+        //     $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+        // });
     }
 
     /**

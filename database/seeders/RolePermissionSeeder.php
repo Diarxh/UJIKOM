@@ -2,69 +2,56 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        // Roles
-        $roles = [
-            ['name' => 'super_admin'],
-            ['name' => 'staff_tata_usaha'],
-            ['name' => 'guru'],
-            ['name' => 'orang_tua'],
-        ];
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Permissions (Contoh - perlu disesuaikan dengan fitur aplikasi Anda)
+        // Buat permissions
         $permissions = [
-            ['name' => 'view_dashboard'],
-            ['name' => 'manage_users'],
-            ['name' => 'manage_students'],
-            ['name' => 'manage_teachers'],
-            ['name' => 'manage_classes'],
-            ['name' => 'manage_attendance'],
-            ['name' => 'manage_grades'],
-            ['name' => 'view_reports'],
-            ['name' => 'view_own_student_data'], // Khusus orang tua
+            'view_dashboard',
+            'manage_users',
+            'manage_students',
+            'manage_teachers',
+            'manage_classes',
+            'manage_attendance',
+            'manage_grades',
+            'view_reports',
+            'view_own_student_data',
         ];
 
-        // Insert Roles
-        Role::insert($roles);
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
 
-        // Insert Permissions
-        Permission::insert($permissions);
+        // Buat roles
+        $superAdmin = Role::create(['name' => 'super_admin']);
+        $staff = Role::create(['name' => 'staff_tata_usaha']);
+        $teacher = Role::create(['name' => 'guru']);
+        $parent = Role::create(['name' => 'orang_tua']);
 
-
-        // Assign Permissions to Roles (Contoh - perlu disesuaikan)
-        $superAdminRole = Role::where('name', 'super_admin')->first();
-        $staffRole = Role::where('name', 'staff_tata_usaha')->first();
-        $teacherRole = Role::where('name', 'guru')->first();
-        $parentRole = Role::where('name', 'orang_tua')->first();
-
-
-        $allPermissions = Permission::all();
-
-        $superAdminRole->permissions()->attach($allPermissions);
-        $staffRole->permissions()->attach([
-            Permission::where('name', 'view_dashboard')->first()->id,
-            Permission::where('name', 'manage_students')->first()->id,
-            Permission::where('name', 'manage_teachers')->first()->id,
-            Permission::where('name', 'manage_classes')->first()->id,
-            Permission::where('name', 'manage_attendance')->first()->id,
-            Permission::where('name', 'manage_grades')->first()->id,
-            Permission::where('name', 'view_reports')->first()->id,
+        // Assign permissions ke roles
+        $superAdmin->givePermissionTo(Permission::all());
+        $staff->givePermissionTo([
+            'view_dashboard',
+            'manage_students',
+            'manage_teachers',
+            'manage_classes',
+            'manage_attendance',
+            'manage_grades',
+            'view_reports',
         ]);
-        $teacherRole->permissions()->attach([
-            Permission::where('name', 'view_dashboard')->first()->id,
-            Permission::where('name', 'manage_attendance')->first()->id,
-            Permission::where('name', 'manage_grades')->first()->id,
-            Permission::where('name', 'view_reports')->first()->id,
+        $teacher->givePermissionTo([
+            'view_dashboard',
+            'manage_attendance',
+            'manage_grades',
+            'view_reports',
         ]);
-        $parentRole->permissions()->attach([Permission::where('name', 'view_own_student_data')->first()->id]);
-
+        $parent->givePermissionTo('view_own_student_data');
     }
 }
