@@ -287,10 +287,8 @@
         </div>
 
     </section><!-- /Features Section -->
-
     <!-- Features Cards Section -->
     <section id="features-cards" class="features-cards section">
-
         <div class="container">
 
             <div class="row gy-4">
@@ -330,12 +328,9 @@
             </div>
 
         </div>
-
     </section><!-- /Features Cards Section -->
-
     <!-- Features 2 Section -->
     <section id="features-2" class="features-2 section">
-
         <div class="container" data-aos="fade-up" data-aos-delay="100">
 
             <div class="row align-items-center">
@@ -431,9 +426,7 @@
             </div>
 
         </div>
-
     </section><!-- /Features 2 Section -->
-
     <!-- Call To Action Section -->
     <section id="call-to-action" class="call-to-action section">
 
@@ -461,12 +454,10 @@
         </div>
 
     </section><!-- /Call To Action Section -->
-
     <!-- Clients Section (dipertahankan, hanya ganti gambar jika perlu) -->
     <section id="clients" class="clients section">
         <!-- ... (isi bagian ini sama, hanya ganti gambar jika diperlukan) ... -->
     </section><!-- /Clients Section -->
-
     <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials section light-background">
 
