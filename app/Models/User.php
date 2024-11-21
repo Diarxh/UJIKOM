@@ -51,16 +51,16 @@ class User extends Authenticatable
     }
 
     // RELASI
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
 
-    // Di model User
-    public function hasPermission($permission)
-    {
-        return $this->roles->contains('permissions', function ($permission_role) use ($permission) {
-            return $permission_role->name == $permission;
-        });
-    }
+    // // Di model User
+    // public function hasPermission($permission)
+    // {
+    //     return $this->roles->contains('permissions', function ($permission_role) use ($permission) {
+    //         return $permission_role->name == $permission;
+    //     });
+    // }
 }

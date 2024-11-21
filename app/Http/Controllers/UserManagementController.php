@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Hash;
 class UserManagementController extends Controller
 {
     // ... CRUD methods ...
+    public function index()
+    {
+        return view('dashboard.index');
+    }
+
     public function showLoginForm()
     {
         return view('auth.login&register');
@@ -41,8 +46,7 @@ class UserManagementController extends Controller
     {
         \Log::info('Register Request', $request->all());
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name' => 'required|string|max:255|unique:users,name',  // unique:users,name            'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:2',
         ]);
 
@@ -54,7 +58,7 @@ class UserManagementController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            // Jika berhasil, redirect ke halaman lain
+            // Jika berhasil, redirect ke halaman login
             return response()->json([
                 'success' => true,
                 'message' => 'Registration successful.',
@@ -72,20 +76,30 @@ class UserManagementController extends Controller
     // Fungsi login
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $request->validate([
+            'credential' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
 
-        if (Auth::attempt($credentials)) {
+        $credential = trim($request->input('credential'));  // Membersihkan whitespace
+
+        $field = filter_var($credential, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        $user = User::where($field, $credential)->first();  // cari user berdasarkan email atau name
+
+        if ($user && Auth::attempt([$field => $credential, 'password' => $request->input('password')])) {
+            $request->session()->regenerate();
             return response()->json([
                 'success' => true,
                 'message' => 'Login successful.',
-                'redirect' => route('dashboard'),
-            ]);
+                'redirect' => route('dashboard')
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials.',
+            ], 401);
         }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid credentials.',
-        ], 401);
     }
 
     // public function assignRole(User $user, Request $request)
