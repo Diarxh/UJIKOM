@@ -14,3 +14,11 @@ Route::post('/login', [UserManagementController::class, 'login'])->name('login')
 Route::post('register', [UserManagementController::class, 'register'])->name('register');
 
 Route::get('/dashboard', [UserManagementController::class, 'index'])->name('dashboard')->middleware('auth');
+
+
+use App\Http\Controllers\StaffTataUsahaController;
+
+Route::middleware(['auth', 'role:staff-tu'])->get('/staff-tu-dashboard', [StaffTataUsahaController::class, 'index']);
+Route::get('/unauthorized', function () {
+    return view('unauthorized');
+});
