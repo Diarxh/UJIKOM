@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+        $this->call(GuruTableSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User1',
-            'email' => 'test@exampldade.com',
-        ]);
+        $this->call(SlipGajiGuruTableSeeder::class);
+        $this->call(SppTableSeeder::class);
+
     }
 }
