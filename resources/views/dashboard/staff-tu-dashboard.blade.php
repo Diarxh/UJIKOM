@@ -1,4 +1,5 @@
 @extends('layouts.dashboard.app')
+{{--  @('resources/js/app.js')  --}}
 @section('content')
     <div class="main-header">
       <div class="main-header-logo">
@@ -496,38 +497,185 @@
           </div>
 
         <div class="row">
-          <div class="col-md-8">
-            <div class="card card-round">
-              <div class="card-header">
-                <div class="card-head-row">
-                  <div class="card-title">User Statistics</div>
-                  <div class="card-tools">
-                    <a
-                      href="#"
-                      class="btn btn-label-success btn-round btn-sm me-2"
-                    >
-                      <span class="btn-label">
-                        <i class="fa fa-pencil"></i>
-                      </span>
-                      Export
-                    </a>
-                    <a href="#" class="btn btn-label-info btn-round btn-sm">
-                      <span class="btn-label">
-                        <i class="fa fa-print"></i>
-                      </span>
-                      Print
-                    </a>
+                <div class="col-md-8">
+                  <div class="card card-round">
+                    <div class="card-header">
+                      <div class="card-head-row">
+                        <div class="card-title">Statistik Pembayaran SPP dan Gaji Guru</div>
+                        <div class="card-tools">
+                          <a
+                            href="#"
+                            class="btn btn-label-success btn-round btn-sm me-2"
+                          >
+                            <span class="btn-label">
+                              <i class="fa fa-pencil"></i>
+                            </span>
+                            Export
+                          </a>
+                          <a href="#" class="btn btn-label-info btn-round btn-sm">
+                            <span class="btn-label">
+                              <i class="fa fa-print"></i>
+                            </span>
+                            Print
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-container" style="min-height: 375px">
+                        <canvas id="statisticsChart"></canvas>
+                      </div>
+                      <div id="myChartLegend"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-container" style="min-height: 375px">
-                  <canvas id="statisticsChart"></canvas>
-                </div>
-                <div id="myChartLegend"></div>
-              </div>
-            </div>
-          </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', (event) => {
+                      const sppData = {!! json_encode($sppData) !!};
+                      const gajiData = {!! json_encode($gajiData) !!};
+                      window.createStatisticsChart(sppData, gajiData);
+                    });
+                  </script>
+              {{--  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+              <script>
+                // Data SPP dari Laravel
+                const sppData = {!! json_encode($sppData) !!};
+                const sppLabels = sppData.map(item => {
+                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                  return months[item.month - 1];
+                });
+                const sppValues = sppData.map(item => item.total);
+
+                // Data Gaji Guru dari Laravel
+                const gajiData = {!! json_encode($gajiData) !!};
+                const gajiLabels = gajiData.map(item => {
+                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                  return months[item.month - 1];
+                });
+                const gajiValues = gajiData.map(item => item.total);
+
+                var ctx = document.getElementById('statisticsChart').getContext('2d');
+
+                var statisticsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                      labels: sppLabels,
+                      datasets: [{
+                        label: "Pembayaran SPP",
+                        borderColor: '#f3545d',
+                        pointBackgroundColor: 'rgba(243, 84, 93, 0.6)',
+                        pointRadius: 0,
+                        backgroundColor: 'rgba(243, 84, 93, 0.4)',
+                        legendColor: '#f3545d',
+                        fill: true,
+                        borderWidth: 2,
+                        data: sppValues
+                      }, {
+                        label: "Total Gaji Guru",
+                        borderColor: '#fdaf4b',
+                        pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
+                        pointRadius: 0,
+                        backgroundColor: 'rgba(253, 175, 75, 0.4)',
+                        legendColor: '#fdaf4b',
+                        fill: true,
+                        borderWidth: 2,
+                        data: gajiValues
+                      }]
+                    },
+                    options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                          boxWidth: 12,
+                          padding: 20,
+                          usePointStyle: true,
+                          fontColor: '#9aa0ac'
+                        }
+                      },
+                      tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                        titleFontColor: '#888',
+                        bodyFontColor: '#555',
+                        titleFontSize: 12,
+                        bodyFontSize: 15,
+                        backgroundColor: 'rgba(256,256,256,0.95)',
+                        titleMarginBottom: 10,
+                        bodySpacing: 10,
+                        yPadding: 15,
+                        xPadding: 15,
+                        borderColor: 'rgba(220, 220, 220, 0.9)',
+                        borderWidth: 2,
+                        caretPadding: 10
+                      },
+                      hover: {
+                        mode: 'nearest',
+                        intersect: true
+                      },
+                      layout: {
+                        padding: {
+                          left: 5,
+                          right: 5,
+                          top: 15,
+                          bottom: 15
+                        }
+                      },
+                      scales: {
+                        yAxes: [{
+                          ticks: {
+                            fontColor: "#9aa0ac",
+                            fontStyle: "500",
+                            beginAtZero: true,
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            callback: function(value, index, values) {
+                              if (parseInt(value) >= 1000) {
+                                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                              } else {
+                                return value;
+                              }
+                            }
+                          },
+                          gridLines: {
+                            drawTicks: false,
+                            display: false
+                          }
+                        }],
+                        xAxes: [{
+                          gridLines: {
+                            zeroLineColor: "transparent"
+                          },
+                          ticks: {
+                            padding: 10,
+                            fontColor: "#9aa0ac",
+                            fontStyle: "500"
+                          }
+                        }]
+                      },
+                      legendCallback: function(chart) {
+                        var text = [];
+                        text.push('<ul class="' + chart.id + '-legend html-legend">');
+                        for (var i = 0; i < chart.data.datasets.length; i++) {
+                          text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>');
+                          if (chart.data.datasets[i].label) {
+                            text.push(chart.data.datasets[i].label);
+                          }
+                          text.push('</li>');
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                      }
+                    }
+                  });
+
+                  var myLegendContainer = document.getElementById("myChartLegend");
+                  myLegendContainer.innerHTML = statisticsChart.generateLegend();
+
+              </script>  --}}
+
           <div class="col-md-4">
             <div class="card card-primary card-round">
               <div class="card-header">
@@ -1239,4 +1387,5 @@
     </div>
     <!-- End Custom template -->
   </div>
+
 @endsection
