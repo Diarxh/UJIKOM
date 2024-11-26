@@ -273,134 +273,127 @@ var world_map = new jsVectorMap({
 // resources/js/charts.js
 
 const createStatisticsChart = (sppData, gajiData) => {
-    const sppLabels = sppData.map((item) => {
-        const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        ];
-        return months[item.month - 1];
-    });
-    const sppValues = sppData.map((item) => item.total);
+    const limitValue = 15000000; // 15 million
 
-    const gajiLabels = gajiData.map((item) => {
-        const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        ];
-        return months[item.month - 1];
-    });
-    const gajiValues = gajiData.map((item) => item.total);
+    // Proses data
+    const processData = (data) => {
+        return data.map((item) => ({
+            month: item.month,
+            total: Math.min(parseFloat(item.total), limitValue), // Pastikan 'total' adalah angka
+        }));
+    };
 
+    const processedSppData = processData(sppData);
+    const processedGajiData = processData(gajiData);
+
+    // Mapping data menjadi labels dan values
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+
+    const sppLabels = processedSppData.map((item) => months[item.month - 1]);
+    const sppValues = processedSppData.map((item) => item.total);
+
+    const gajiLabels = processedGajiData.map((item) => months[item.month - 1]);
+    const gajiValues = processedGajiData.map((item) => item.total);
+
+    // Chart.js setup
     var ctx = document.getElementById("statisticsChart").getContext("2d");
 
     var statisticsChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: sppLabels,
+            labels: sppLabels, // Menambahkan label dari data yang diproses
             datasets: [
                 {
-                    label: "Pembayaran SPP",
-                    borderColor: "#f3545d",
-                    pointBackgroundColor: "rgba(243, 84, 93, 0.6)",
-                    pointRadius: 0,
-                    backgroundColor: "rgba(243, 84, 93, 0.4)",
-                    legendColor: "#f3545d",
+                    label: "Pemasukan SPP", // Label untuk pemasukan
+                    borderColor: "#4CAF50", // Hijau untuk pemasukan
+                    pointBackgroundColor: "rgba(76, 175, 80, 0.6)",
+                    pointRadius: 4,
+                    backgroundColor: "rgba(76, 175, 80, 0.3)",
                     fill: true,
                     borderWidth: 2,
-                    data: sppValues,
+                    data: sppValues, // Menambahkan data untuk SPP
                 },
                 {
-                    label: "Total Gaji Guru",
-                    borderColor: "#fdaf4b",
-                    pointBackgroundColor: "rgba(253, 175, 75, 0.6)",
-                    pointRadius: 0,
-                    backgroundColor: "rgba(253, 175, 75, 0.4)",
-                    legendColor: "#fdaf4b",
+                    label: "Pengeluaran Gaji Guru", // Label untuk pengeluaran
+                    borderColor: "#f3545d", // Merah untuk pengeluaran
+                    pointBackgroundColor: "rgba(243, 84, 93, 0.6)",
+                    pointRadius: 4,
+                    backgroundColor: "rgba(243, 84, 93, 0.3)",
                     fill: true,
                     borderWidth: 2,
-                    data: gajiValues,
+                    data: gajiValues, // Menambahkan data untuk Gaji
                 },
             ],
         },
         options: {
-            // ... other options ...
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: true,
+                position: "top",
+            },
+            tooltips: {
+                bodySpacing: 4,
+                mode: "nearest",
+                intersect: 0,
+                position: "nearest",
+                xPadding: 10,
+                yPadding: 10,
+                caretPadding: 10,
+            },
+            layout: {
+                padding: { left: 5, right: 5, top: 15, bottom: 15 },
+            },
             scales: {
-                y: {
-                    ticks: {
-                        fontColor: "#9aa0ac",
-                        fontStyle: "500",
-                        beginAtZero: true,
-                        maxTicksLimit: 5,
-                        padding: 10,
-                        callback: function (value, index, values) {
-                            if (parseInt(value) >= 1000) {
-                                return value
-                                    .toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                            } else {
-                                return value;
-                            }
+                yAxes: [
+                    {
+                        ticks: {
+                            fontStyle: "500",
+                            beginAtZero: false,
+                            maxTicksLimit: 5,
+                            padding: 10,
+                        },
+                        gridLines: {
+                            drawTicks: false,
+                            display: true,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: "Jumlah (Rupiah)",
                         },
                     },
-                    gridLines: {
-                        drawTicks: false,
-                        display: false,
+                ],
+                xAxes: [
+                    {
+                        gridLines: {
+                            zeroLineColor: "transparent",
+                        },
+                        ticks: {
+                            padding: 10,
+                            fontStyle: "500",
+                        },
                     },
-                },
-                x: {
-                    gridLines: {
-                        zeroLineColor: "transparent",
-                    },
-                    ticks: {
-                        padding: 10,
-                        fontColor: "#9aa0ac",
-                        fontStyle: "500",
-                    },
-                },
-            },
-            legendCallback: function (chart) {
-                var text = [];
-                text.push('<ul class="' + chart.id + '-legend html-legend">');
-                for (var i = 0; i < chart.data.datasets.length; i++) {
-                    text.push(
-                        '<li><span style="background-color:' +
-                            chart.data.datasets[i].legendColor +
-                            '"></span>'
-                    );
-                    if (chart.data.datasets[i].label) {
-                        text.push(chart.data.datasets[i].label);
-                    }
-                    text.push("</li>");
-                }
-                text.push("</ul>");
-                return text.join("");
+                ],
             },
         },
     });
 
+    // Menambahkan legenda chart ke elemen HTML
     var myLegendContainer = document.getElementById("myChartLegend");
-    myLegendContainer.innerHTML =
-        statisticsChart.options.legendCallback(statisticsChart);
+    myLegendContainer.innerHTML = statisticsChart.generateLegend();
 };
 
 window.createStatisticsChart = createStatisticsChart;

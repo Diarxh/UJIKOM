@@ -26,7 +26,8 @@ class StaffTataUsahaController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get();
-        // dd($gajiData);
+
+        // dd($sppData, $gajiData); // Cek data di sini
         $siswaCount = Student::count();
         $guruCount = Teacher::count();
         $slipGajiCount = User::count();

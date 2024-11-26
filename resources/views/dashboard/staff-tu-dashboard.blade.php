@@ -524,210 +524,134 @@
                     <div class="card-body">
                       <div class="chart-container" style="min-height: 375px">
                         <canvas id="statisticsChart"></canvas>
-                      </div>
+                    </div>
                       <div id="myChartLegend"></div>
                     </div>
                   </div>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', (event) => {
-                      const sppData = {!! json_encode($sppData) !!};
-                      const gajiData = {!! json_encode($gajiData) !!};
-                      window.createStatisticsChart(sppData, gajiData);
+                        const sppData = {!! json_encode($sppData) !!};
+                        const gajiData = {!! json_encode($gajiData) !!};
+
+                        console.log(sppData); // Cek data
+                        console.log(gajiData); // Cek data
+
+                        window.createStatisticsChart(sppData, gajiData);
                     });
+
                   </script>
-              {{--  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-              <script>
-                // Data SPP dari Laravel
-                const sppData = {!! json_encode($sppData) !!};
-                const sppLabels = sppData.map(item => {
-                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                  return months[item.month - 1];
-                });
-                const sppValues = sppData.map(item => item.total);
-
-                // Data Gaji Guru dari Laravel
-                const gajiData = {!! json_encode($gajiData) !!};
-                const gajiLabels = gajiData.map(item => {
-                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                  return months[item.month - 1];
-                });
-                const gajiValues = gajiData.map(item => item.total);
-
-                var ctx = document.getElementById('statisticsChart').getContext('2d');
-
-                var statisticsChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                      labels: sppLabels,
-                      datasets: [{
-                        label: "Pembayaran SPP",
-                        borderColor: '#f3545d',
-                        pointBackgroundColor: 'rgba(243, 84, 93, 0.6)',
-                        pointRadius: 0,
-                        backgroundColor: 'rgba(243, 84, 93, 0.4)',
-                        legendColor: '#f3545d',
-                        fill: true,
-                        borderWidth: 2,
-                        data: sppValues
-                      }, {
-                        label: "Total Gaji Guru",
-                        borderColor: '#fdaf4b',
-                        pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
-                        pointRadius: 0,
-                        backgroundColor: 'rgba(253, 175, 75, 0.4)',
-                        legendColor: '#fdaf4b',
-                        fill: true,
-                        borderWidth: 2,
-                        data: gajiValues
-                      }]
-                    },
-                    options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                          boxWidth: 12,
-                          padding: 20,
-                          usePointStyle: true,
-                          fontColor: '#9aa0ac'
-                        }
-                      },
-                      tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                        titleFontColor: '#888',
-                        bodyFontColor: '#555',
-                        titleFontSize: 12,
-                        bodyFontSize: 15,
-                        backgroundColor: 'rgba(256,256,256,0.95)',
-                        titleMarginBottom: 10,
-                        bodySpacing: 10,
-                        yPadding: 15,
-                        xPadding: 15,
-                        borderColor: 'rgba(220, 220, 220, 0.9)',
-                        borderWidth: 2,
-                        caretPadding: 10
-                      },
-                      hover: {
-                        mode: 'nearest',
-                        intersect: true
-                      },
-                      layout: {
-                        padding: {
-                          left: 5,
-                          right: 5,
-                          top: 15,
-                          bottom: 15
-                        }
-                      },
-                      scales: {
-                        yAxes: [{
-                          ticks: {
-                            fontColor: "#9aa0ac",
-                            fontStyle: "500",
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            padding: 10,
-                            callback: function(value, index, values) {
-                              if (parseInt(value) >= 1000) {
-                                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                              } else {
-                                return value;
-                              }
-                            }
-                          },
-                          gridLines: {
-                            drawTicks: false,
-                            display: false
-                          }
-                        }],
-                        xAxes: [{
-                          gridLines: {
-                            zeroLineColor: "transparent"
-                          },
-                          ticks: {
-                            padding: 10,
-                            fontColor: "#9aa0ac",
-                            fontStyle: "500"
-                          }
-                        }]
-                      },
-                      legendCallback: function(chart) {
-                        var text = [];
-                        text.push('<ul class="' + chart.id + '-legend html-legend">');
-                        for (var i = 0; i < chart.data.datasets.length; i++) {
-                          text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>');
-                          if (chart.data.datasets[i].label) {
-                            text.push(chart.data.datasets[i].label);
-                          }
-                          text.push('</li>');
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                      }
-                    }
-                  });
-
-                  var myLegendContainer = document.getElementById("myChartLegend");
-                  myLegendContainer.innerHTML = statisticsChart.generateLegend();
-
-              </script>  --}}
-
-          <div class="col-md-4">
-            <div class="card card-primary card-round">
-              <div class="card-header">
-                <div class="card-head-row">
-                  <div class="card-title">Daily Sales</div>
-                  <div class="card-tools">
-                    <div class="dropdown">
-                      <button
-                        class="btn btn-sm btn-label-light dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-bs-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Export
-                      </button>
-                      <div
-                        class="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#"
-                          >Something else here</a
-                        >
-                      </div>
+                  <div class="col-md-4">
+                    <div class="card card-primary card-round">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-title">Pemasukan & Pengeluaran</div>
+                                <div class="card-tools">
+                                    <!-- Dropdown untuk memilih antara SPP atau Gaji Guru -->
+                                    <select id="dataSelector" class="form-control form-control-sm">
+                                        <option value="spp">Pembayaran SPP</option>
+                                        <option value="gaji">Gaji Guru</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pb-0">
+                            <div class="mb-4 mt-2">
+                                <h2 id="title">Total Pembayaran SPP</h2>
+                                <ul>
+                                    <li>
+                                        <label for="inputAmount">Jumlah:</label>
+                                        <input type="number" id="inputAmount" value="0" class="form-control" />
+                                    </li>
+                                    <li>
+                                        <strong>Total:</strong> <span id="totalAmount">0</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pull-in">
+                                <canvas id="dataChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <div class="card-category">March 25 - April 02</div>
-              </div>
-              <div class="card-body pb-0">
-                <div class="mb-4 mt-2">
-                  <h1>$4,578.58</h1>
-                </div>
-                <div class="pull-in">
-                  <canvas id="dailySalesChart"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="card card-round">
-              <div class="card-body pb-0">
-                <div class="h1 fw-bold float-end text-primary">+5%</div>
-                <h2 class="mb-2">17</h2>
-                <p class="text-muted">Users online</p>
-                <div class="pull-in sparkline-fix">
-                  <div id="lineChart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dataSelector = document.getElementById('dataSelector');
+        const inputAmount = document.getElementById('inputAmount');
+        const totalAmount = document.getElementById('totalAmount');
+        const title = document.getElementById('title');
+        const dataChart = document.getElementById('dataChart').getContext('2d');
+
+        // Data SPP dan Gaji Guru
+        const sppData = [5000000, 6000000, 7000000]; // Misal data SPP
+        const gajiData = [8000000, 8500000, 9000000]; // Misal data Gaji Guru
+
+        // Fungsi untuk memperbarui chart
+        const updateChart = (data) => {
+            const chartData = {
+                labels: ['Bulan 1', 'Bulan 2', 'Bulan 3'],
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#f3545d'],
+                    borderColor: ['#f3545d'],
+                    borderWidth: 1
+                }]
+            };
+
+            if (window.chart) {
+                window.chart.data = chartData;
+                window.chart.update();
+            } else {
+                window.chart = new Chart(dataChart, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (tooltipItem) => {
+                                        return `Rp ${tooltipItem.raw.toFixed(2)}`;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+            }
+        };
+
+        // Update judul dan data berdasarkan pilihan
+        const updateData = () => {
+            const selectedOption = dataSelector.value;
+
+            if (selectedOption === 'spp') {
+                title.textContent = 'Total Pembayaran SPP';
+                inputAmount.value = sppData.reduce((acc, val) => acc + val, 0); // Total SPP
+                totalAmount.textContent = `Rp ${inputAmount.value.toFixed(2)}`;
+                updateChart(sppData); // Update chart dengan data SPP
+            } else if (selectedOption === 'gaji') {
+                title.textContent = 'Total Gaji Guru';
+                inputAmount.value = gajiData.reduce((acc, val) => acc + val, 0); // Total Gaji
+                totalAmount.textContent = `Rp ${inputAmount.value.toFixed(2)}`;
+                updateChart(gajiData); // Update chart dengan data Gaji Guru
+            }
+        };
+
+        // Menambahkan event listener untuk pilihan data
+        dataSelector.addEventListener('change', updateData);
+
+        // Menambahkan event listener untuk mengupdate jumlah input
+        inputAmount.addEventListener('input', () => {
+            totalAmount.textContent = `Rp ${parseFloat(inputAmount.value).toFixed(2)}`;
+        });
+
+        // Set initial data
+        updateData();
+    });
+
+</script>
+
         </div>
         <div class="row">
           <div class="col-md-12">
