@@ -1,3 +1,5 @@
+@section('title', 'Dashboard Manajemen Sekolah')  <!-- Judul untuk halaman dashboard -->
+
 @extends('layouts.dashboard.app')
 {{--  @('resources/js/app.js')  --}}
 @section('content')
@@ -558,15 +560,7 @@
                         <div class="card-body pb-0">
                             <div class="mb-4 mt-2">
                                 <h2 id="title">Total Pembayaran SPP</h2>
-                                <ul>
-                                    <li>
-                                        <label for="inputAmount">Jumlah:</label>
-                                        <input type="number" id="inputAmount" value="0" class="form-control" />
-                                    </li>
-                                    <li>
-                                        <strong>Total:</strong> <span id="totalAmount">0</span>
-                                    </li>
-                                </ul>
+                                <p><strong>Total:</strong> <span id="totalAmount">Rp 0</span></p>
                             </div>
                             <div class="pull-in">
                                 <canvas id="dataChart"></canvas>
@@ -574,83 +568,7 @@
                         </div>
                     </div>
                 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const dataSelector = document.getElementById('dataSelector');
-        const inputAmount = document.getElementById('inputAmount');
-        const totalAmount = document.getElementById('totalAmount');
-        const title = document.getElementById('title');
-        const dataChart = document.getElementById('dataChart').getContext('2d');
 
-        // Data SPP dan Gaji Guru
-        const sppData = [5000000, 6000000, 7000000]; // Misal data SPP
-        const gajiData = [8000000, 8500000, 9000000]; // Misal data Gaji Guru
-
-        // Fungsi untuk memperbarui chart
-        const updateChart = (data) => {
-            const chartData = {
-                labels: ['Bulan 1', 'Bulan 2', 'Bulan 3'],
-                datasets: [{
-                    data: data,
-                    backgroundColor: ['#f3545d'],
-                    borderColor: ['#f3545d'],
-                    borderWidth: 1
-                }]
-            };
-
-            if (window.chart) {
-                window.chart.data = chartData;
-                window.chart.update();
-            } else {
-                window.chart = new Chart(dataChart, {
-                    type: 'bar',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: (tooltipItem) => {
-                                        return `Rp ${tooltipItem.raw.toFixed(2)}`;
-                                    }
-                                }
-                            }
-                        }
-                    });
-                };
-            }
-        };
-
-        // Update judul dan data berdasarkan pilihan
-        const updateData = () => {
-            const selectedOption = dataSelector.value;
-
-            if (selectedOption === 'spp') {
-                title.textContent = 'Total Pembayaran SPP';
-                inputAmount.value = sppData.reduce((acc, val) => acc + val, 0); // Total SPP
-                totalAmount.textContent = `Rp ${inputAmount.value.toFixed(2)}`;
-                updateChart(sppData); // Update chart dengan data SPP
-            } else if (selectedOption === 'gaji') {
-                title.textContent = 'Total Gaji Guru';
-                inputAmount.value = gajiData.reduce((acc, val) => acc + val, 0); // Total Gaji
-                totalAmount.textContent = `Rp ${inputAmount.value.toFixed(2)}`;
-                updateChart(gajiData); // Update chart dengan data Gaji Guru
-            }
-        };
-
-        // Menambahkan event listener untuk pilihan data
-        dataSelector.addEventListener('change', updateData);
-
-        // Menambahkan event listener untuk mengupdate jumlah input
-        inputAmount.addEventListener('input', () => {
-            totalAmount.textContent = `Rp ${parseFloat(inputAmount.value).toFixed(2)}`;
-        });
-
-        // Set initial data
-        updateData();
-    });
-
-</script>
 
         </div>
         <div class="row">
@@ -784,6 +702,108 @@
           </div>
         </div>
         <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Daftar Siswa</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table id="multi-filter-select" class="display table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th>Nama</th>
+                            <th>NIS</th>
+                            <th>Kelas</th>
+                            <th>Tanggal Lahir</th>
+
+                            {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                          </tr>
+                        </thead>
+                        <tfoot>
+                          <tr>
+                            <th>Nama</th>
+                            <th>NIS</th>
+                            <th>Kelas</th>
+                            <th>Tanggal Lahir</th>
+                            {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                          </tr>
+                        </tfoot>
+                        <tbody>
+                          @foreach ($students as $student)
+                            <tr>
+                              <td>{{ $student->name }}</td>
+                              <td>{{ $student->nis }}</td>
+                              <td>{{ $student->class->name }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
+                              <td>{{ $student->dob }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
+                              {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                            </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js')}}"></script>  <!-- jQuery harus di sini -->
+<script src="{{ asset('tu/assets/js/plugins/datatables.net/js/jquery.dataTables.min.js')}}"></script> <!-- Pastikan Anda telah menambahkan library DataTables -->
+              <script>
+                $(document).ready(function () {
+                  $("#basic-datatables").DataTable({});
+
+                  $("#multi-filter-select").DataTable({
+                    pageLength: 5,
+                    initComplete: function () {
+                      this.api()
+                        .columns()
+                        .every(function () {
+                          var column = this;
+                          var select = $(
+                            '<select class="form-select"><option value=""></option></select>'
+                          )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function () {
+                              var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                              column
+                                .search(val ? "^" + val + "$" : "", true, false)
+                                .draw();
+                            });
+
+                          column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                              select.append(
+                                '<option value="' + d + '">' + d + "</option>"
+                              );
+                            });
+                        });
+                    },
+                  });
+
+                  // Add Row
+                  $("#add-row").DataTable({
+                    pageLength: 5,
+                  });
+
+                  var action =
+                    '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+                  $("#addRowButton").click(function () {
+                    $("#add-row")
+                      .dataTable()
+                      .fnAddData([
+                        $("#addName").val(),
+                        $("#addPosition").val(),
+                        $("#addOffice").val(),
+                        action,
+                      ]);
+                    $("#addRowModal").modal("hide");
+                  });
+                });
+              </script>
           <div class="col-md-4">
             <div class="card card-round">
               <div class="card-body">
@@ -1117,7 +1137,7 @@
       </div>
     </footer>
     {{--  <!-- Custom template | don't include it in your project! -->  --}}
-    <div class="custom-template">
+    {{--  <div class="custom-template">
       <div class="title">Settings</div>
       <div class="custom-content">
         <div class="switcher">
@@ -1308,7 +1328,7 @@
       <div class="custom-toggle">
         <i class="icon-settings"></i>
       </div>
-    </div>
+    </div>  --}}
     <!-- End Custom template -->
   </div>
 

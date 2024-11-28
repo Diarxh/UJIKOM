@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
+    <title>@yield('title', 'Kaiadmin - Bootstrap 5 Admin Dashboard')</title>  <!-- Bagian ini diubah -->
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
@@ -31,8 +31,8 @@
         active: function () {
           sessionStorage.fonts = true;
         },
-      });  --}}
-    </script>
+      });
+    </script>  --}}
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{ asset('tu/assets/css/bootstrap.min.css')}}" />

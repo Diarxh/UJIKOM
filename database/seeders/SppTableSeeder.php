@@ -2,42 +2,29 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\SPP;
+use App\Models\Student;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
-class SPPSeeder extends Seeder
+class SppTableSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
     {
-        // Menghapus semua data yang ada
-        SPP::truncate();
+        $siswa = Student::first(); // Mengambil siswa pertama yang telah diseed
 
-        // Memasukkan data demo
-        $data = [
-            [
-                'siswa_id' => 1,
-                'tahun_ajaran' => '2022/2023',
-                'bulan' => 1,
-                'jumlah_bayar' => 200000,
-                'tanggal_bayar' => '2023-01-15',
-                'status_bayar' => 'Lunas',
-                'bukti_bayar' => 'bukti_bayar_januari.jpg'
-            ],
-            [
-                'siswa_id' => 1,
-                'tahun_ajaran' => '2022/2023',
-                'bulan' => 2,
-                'jumlah_bayar' => 200000,
-                'tanggal_bayar' => '2023-02-15',
-                'status_bayar' => 'Lunas',
-                'bukti_bayar' => 'bukti_bayar_februari.jpg'
-            ],
-            // Tambahkan data demo lainnya di sini
-        ];
-
-        foreach ($data as $item) {
-            SPP::create($item);
-        }
+        SPP::create([
+            'siswa_id' => $siswa->id,
+            'tahun_ajaran' => '2023/2024',
+            'bulan' => 1,
+            'jumlah_bayar' => 500000.00,
+            'tanggal_bayar' => Carbon::now()->toDateString(),
+            'status_bayar' => 'Lunas',
+            // 'bukti_bayar' => 'path_to_bukti_bayar.jpg',
+        ]);
     }
 }

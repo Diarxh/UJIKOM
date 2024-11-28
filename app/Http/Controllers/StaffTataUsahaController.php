@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Grade;
 use App\Models\SchoolClass;
 use App\Models\SlipGajiGuru;
 use App\Models\SPP;
@@ -26,6 +27,10 @@ class StaffTataUsahaController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get();
+        // Data untuk tampilan Akademik
+        $grades = Grade::with('student', 'class')->get();
+        $attendances = Attendance::with('student', 'class')->get();
+        $students = Student::all(); // Ambil semua data siswa
 
         // dd($sppData, $gajiData); // Cek data di sini
         $siswaCount = Student::count();
@@ -35,7 +40,7 @@ class StaffTataUsahaController extends Controller
         $absensiGuruCount = Attendance::count();
 
         // Mengirim data ke view
-        return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData'));
+        return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData', 'grades', 'attendances', 'students'));
     }
 
 
