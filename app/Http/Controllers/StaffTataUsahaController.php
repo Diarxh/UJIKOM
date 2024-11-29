@@ -10,6 +10,7 @@ use App\Models\SPP;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class StaffTataUsahaController extends Controller
@@ -30,7 +31,6 @@ class StaffTataUsahaController extends Controller
         // Data untuk tampilan Akademik
         $grades = Grade::with('student', 'class')->get();
         $attendances = Attendance::with('student', 'class')->get();
-        $students = Student::all(); // Ambil semua data siswa
 
         // dd($sppData, $gajiData); // Cek data di sini
         $siswaCount = Student::count();
@@ -38,6 +38,13 @@ class StaffTataUsahaController extends Controller
         $slipGajiCount = User::count();
         $absensiSiswaCount = Attendance::count();
         $absensiGuruCount = Attendance::count();
+        // dd($students);
+
+
+        $students = Student::all(); // Accessor bekerja
+
+
+
 
         // Mengirim data ke view
         return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData', 'grades', 'attendances', 'students'));

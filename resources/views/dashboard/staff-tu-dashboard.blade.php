@@ -499,6 +499,7 @@
           </div>
 
         <div class="row">
+            <div class="Statistik_pemabayaran_spp"></div>
                 <div class="col-md-8">
                   <div class="card card-round">
                     <div class="card-header">
@@ -542,8 +543,8 @@
                         window.createStatisticsChart(sppData, gajiData);
                     });
 
-                  </script>
-                  <div class="col-md-4">
+                </script>
+                <div class="col-md-4">
                     <div class="card card-primary card-round">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -568,242 +569,117 @@
                         </div>
                     </div>
                 </div>
-
-
         </div>
         <div class="row">
-          <div class="col-md-12">
-            <div class="card card-round">
-              <div class="card-header">
-                <div class="card-head-row card-tools-still-right">
-                  <h4 class="card-title">Users Geolocation</h4>
-                  <div class="card-tools">
-                    <button
-                      class="btn btn-icon btn-link btn-primary btn-xs"
-                    >
-                      <span class="fa fa-angle-down"></span>
-                    </button>
-                    <button
-                      class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"
-                    >
-                      <span class="fa fa-sync-alt"></span>
-                    </button>
-                    <button
-                      class="btn btn-icon btn-link btn-primary btn-xs"
-                    >
-                      <span class="fa fa-times"></span>
-                    </button>
-                  </div>
-                </div>
-                <p class="card-category">
-                  Map of the distribution of users around the world
-                </p>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="table-responsive table-hover table-sales">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/id.png"
-                                  alt="indonesia"
-                                />
-                              </div>
-                            </td>
-                            <td>Indonesia</td>
-                            <td class="text-end">2.320</td>
-                            <td class="text-end">42.18%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/us.png"
-                                  alt="united states"
-                                />
-                              </div>
-                            </td>
-                            <td>USA</td>
-                            <td class="text-end">240</td>
-                            <td class="text-end">4.36%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/au.png"
-                                  alt="australia"
-                                />
-                              </div>
-                            </td>
-                            <td>Australia</td>
-                            <td class="text-end">119</td>
-                            <td class="text-end">2.16%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/ru.png"
-                                  alt="russia"
-                                />
-                              </div>
-                            </td>
-                            <td>Russia</td>
-                            <td class="text-end">1.081</td>
-                            <td class="text-end">19.65%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/cn.png"
-                                  alt="china"
-                                />
-                              </div>
-                            </td>
-                            <td>China</td>
-                            <td class="text-end">1.100</td>
-                            <td class="text-end">20%</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="flag">
-                                <img
-                                  src="assets/img/flags/br.png"
-                                  alt="brazil"
-                                />
-                              </div>
-                            </td>
-                            <td>Brasil</td>
-                            <td class="text-end">640</td>
-                            <td class="text-end">11.63%</td>
-                          </tr>
-                        </tbody>
-                      </table>
+            <div class="daftarsiswa">
+                <div class="col-md-12">
+                    <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Daftar Siswa</h4>
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="mapcontainer">
-                      <div
-                        id="world-map"
-                        class="w-100"
-                        style="height: 300px"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4 class="card-title">Daftar Siswa</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table id="multi-filter-select" class="display table table-striped table-hover">
-                        <thead>
-                          <tr>
-                            <th>Nama</th>
-                            <th>NIS</th>
-                            <th>Kelas</th>
-                            <th>Tanggal Lahir</th>
-
-                            {{-- Tambahkan kolom lain sesuai kebutuhan --}}
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr>
-                            <th>Nama</th>
-                            <th>NIS</th>
-                            <th>Kelas</th>
-                            <th>Tanggal Lahir</th>
-                            {{-- Tambahkan kolom lain sesuai kebutuhan --}}
-                          </tr>
-                        </tfoot>
-                        <tbody>
-                          @foreach ($students as $student)
+                    <div class="card-body">
+                        <div class="table-responsive">
+                        <table id="multi-filter-select" class="display table table-striped table-hover">
+                            <thead>
                             <tr>
-                              <td>{{ $student->name }}</td>
-                              <td>{{ $student->nis }}</td>
-                              <td>{{ $student->class->name }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
-                              <td>{{ $student->dob }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
-                              {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                                <th>Nama</th>
+                                <th>NIS</th>
+                                <th>Kelas</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Umur</th> {{-- Kolom baru untuk umur --}}
+
+                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
                             </tr>
-                          @endforeach
-                        </tbody>
-                      </table>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>Nama</th>
+                                <th>NIS</th>
+                                <th>Kelas</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Umur</th> {{-- Kolom baru untuk umur --}}
+
+                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            @foreach ($students as $student)
+                                <tr>
+                                <td>{{ $student->name }}</td>
+                                <td>{{ $student->nis }}</td>
+                                <td>{{ $student->class->name }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
+                                <td>{{ $student->dob }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
+                                <td>{{ $student->age }}</td> {{-- Menampilkan umur menggunakan accessor --}}
+
+                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
-                  </div>
+                    </div>
                 </div>
-              </div>
-              <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js')}}"></script>  <!-- jQuery harus di sini -->
-<script src="{{ asset('tu/assets/js/plugins/datatables.net/js/jquery.dataTables.min.js')}}"></script> <!-- Pastikan Anda telah menambahkan library DataTables -->
-              <script>
-                $(document).ready(function () {
-                  $("#basic-datatables").DataTable({});
+                <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js')}}"></script>  <!-- jQuery harus di sini -->
+                <script src="{{ asset('tu/assets/js/plugins/datatables.net/js/jquery.dataTables.min.js')}}"></script> <!-- Pastikan Anda telah menambahkan library DataTables -->
+                <script>
+                    $(document).ready(function () {
+                    $("#basic-datatables").DataTable({});
 
-                  $("#multi-filter-select").DataTable({
-                    pageLength: 5,
-                    initComplete: function () {
-                      this.api()
-                        .columns()
-                        .every(function () {
-                          var column = this;
-                          var select = $(
-                            '<select class="form-select"><option value=""></option></select>'
-                          )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function () {
-                              var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                    $("#multi-filter-select").DataTable({
+                        pageLength: 5,
+                        initComplete: function () {
+                        this.api()
+                            .columns()
+                            .every(function () {
+                            var column = this;
+                            var select = $(
+                                '<select class="form-select"><option value=""></option></select>'
+                            )
+                                .appendTo($(column.footer()).empty())
+                                .on("change", function () {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-                              column
-                                .search(val ? "^" + val + "$" : "", true, false)
-                                .draw();
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                                });
+
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                                });
                             });
+                        },
+                    });
 
-                          column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function (d, j) {
-                              select.append(
-                                '<option value="' + d + '">' + d + "</option>"
-                              );
-                            });
-                        });
-                    },
-                  });
+                    // Add Row
+                    $("#add-row").DataTable({
+                        pageLength: 5,
+                    });
 
-                  // Add Row
-                  $("#add-row").DataTable({
-                    pageLength: 5,
-                  });
+                    var action =
+                        '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-                  var action =
-                    '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-                  $("#addRowButton").click(function () {
-                    $("#add-row")
-                      .dataTable()
-                      .fnAddData([
-                        $("#addName").val(),
-                        $("#addPosition").val(),
-                        $("#addOffice").val(),
-                        action,
-                      ]);
-                    $("#addRowModal").modal("hide");
-                  });
-                });
-              </script>
+                    $("#addRowButton").click(function () {
+                        $("#add-row")
+                        .dataTable()
+                        .fnAddData([
+                            $("#addName").val(),
+                            $("#addPosition").val(),
+                            $("#addOffice").val(),
+                            action,
+                        ]);
+                        $("#addRowModal").modal("hide");
+                    });
+                    });
+                </script>
+            </div>
           <div class="col-md-4">
             <div class="card card-round">
               <div class="card-body">
