@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="{{ asset('tu/assets/css/kaiadmin.min.css')}}" />
 
     <link rel="stylesheet" href="{{ asset('tu/assets/css/demo.css')}}" />
+    <link rel="stylesheet" href="{{ asset('tu/assets/css/kaiadmin.css')}}" />
   </head>
 
 

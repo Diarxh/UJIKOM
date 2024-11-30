@@ -30,9 +30,7 @@
         <!-- End Logo Header -->
       </div>
       <!-- Navbar Header -->
-      <nav
-        class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
-      >
+      {{--  <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"      >
         <div class="container-fluid">
           <nav
             class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
@@ -382,7 +380,7 @@
           </ul>
         </div>
       </nav>
-      <!-- End Navbar -->
+      <!-- End Navbar -->  --}}
     </div>
 
     <div class="container">
@@ -574,55 +572,77 @@
             <div class="daftarsiswa">
                 <div class="col-md-12">
                     <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Daftar Siswa</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                        <table id="multi-filter-select" class="display table table-striped table-hover">
-                            <thead>
-                            <tr>
-                                <th>Nama</th>
-                                <th>NIS</th>
-                                <th>Kelas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Umur</th> {{-- Kolom baru untuk umur --}}
-
-                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
-                            </tr>
-                            </thead>
-                            <tfoot>
-                            <tr>
-                                <th>Nama</th>
-                                <th>NIS</th>
-                                <th>Kelas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Umur</th> {{-- Kolom baru untuk umur --}}
-
-                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
-                            </tr>
-                            </tfoot>
-                            <tbody>
-                            @foreach ($students as $student)
-                                <tr>
-                                <td>{{ $student->name }}</td>
-                                <td>{{ $student->nis }}</td>
-                                <td>{{ $student->class->name }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
-                                <td>{{ $student->dob }}</td> {{-- Asumsikan ada relasi ke model SchoolClass --}}
-                                <td>{{ $student->age }}</td> {{-- Menampilkan umur menggunakan accessor --}}
-
-                                {{-- Tambahkan kolom lain sesuai kebutuhan --}}
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                        <div class="card-header">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="siswa-tab" data-bs-toggle="tab" data-bs-target="#siswa" type="button" role="tab" aria-controls="siswa" aria-selected="true">Daftar Siswa</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="guru-tab" data-bs-toggle="tab" data-bs-target="#guru" type="button" role="tab" aria-controls="guru" aria-selected="false">Daftar Guru</button>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="siswa" role="tabpanel" aria-labelledby="siswa-tab">
+                                    <div class="table-responsive">
+                                        <table id="siswa-table" class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama</th>
+                                                    <th>NIS</th>
+                                                    <th>Kelas</th>
+                                                    <th>Tanggal Lahir</th>
+                                                    <th>Umur</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($students as $student)
+                                                    <tr>
+                                                        <td>{{ $student->name }}</td>
+                                                        <td>{{ $student->nis }}</td>
+                                                        <td>{{ $student->class->name }}</td>
+                                                        <td>{{ $student->dob }}</td>
+                                                        <td>{{ $student->age }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="guru" role="tabpanel" aria-labelledby="guru-tab">
+                                    <div class="table-responsive">
+                                        <table id="guru-table" class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama</th>
+                                                    <th>NIP</th>
+                                                    <th>Mata Pelajaran</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($teachers as $teacher)
+                                                    <tr>
+                                                        <td>{{ $teacher->name }}</td>
+                                                        <td>{{ $teacher->nip }}</td>
+                                                        <td>{{ $teacher->subject }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js')}}"></script>  <!-- jQuery harus di sini -->
                 <script src="{{ asset('tu/assets/js/plugins/datatables.net/js/jquery.dataTables.min.js')}}"></script> <!-- Pastikan Anda telah menambahkan library DataTables -->
                 <script>
+                    $(document).ready( function () {
+                        $('#siswa-table').DataTable();
+                        $('#guru-table').DataTable();
+                    } );
                     $(document).ready(function () {
                     $("#basic-datatables").DataTable({});
 

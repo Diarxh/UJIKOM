@@ -39,6 +39,7 @@ class StaffTataUsahaController extends Controller
         $absensiSiswaCount = Attendance::count();
         $absensiGuruCount = Attendance::count();
         // dd($students);
+        $teachers = Teacher::all(); // Ambil data guru
 
 
         $students = Student::all(); // Accessor bekerja
@@ -47,7 +48,7 @@ class StaffTataUsahaController extends Controller
 
 
         // Mengirim data ke view
-        return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData', 'grades', 'attendances', 'students'));
+        return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData', 'grades', 'attendances', 'students', 'teachers'));
     }
 
 
