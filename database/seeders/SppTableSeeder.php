@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\SPP;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\SPP;
 
-class SPPSeeder extends Seeder
+class SppTableSeeder extends Seeder
 {
     public function run()
     {
         // Menghapus semua data yang ada
-        SPP::truncate();
+        // SPP::truncate();
+        $data = SPP::first();  // Mengambil guru pertama yang telah diseed
 
         // Memasukkan data demo
         $data = [
@@ -36,8 +37,8 @@ class SPPSeeder extends Seeder
             // Tambahkan data demo lainnya di sini
         ];
 
-        foreach ($data as $item) {
-            SPP::create($item);
-        }
+        // foreach ($data as $item) {
+        //     SPP::create($item);
+        // }
     }
 }

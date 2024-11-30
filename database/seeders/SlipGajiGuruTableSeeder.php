@@ -15,16 +15,16 @@ class SlipGajiGuruTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $guru = Teacher::first(); // Mengambil guru pertama yang telah diseed
+        $guru = Teacher::first();  // Mengambil guru pertama yang telah diseed
 
         SlipGajiGuru::create([
             'guru_id' => $guru->id,
             'bulan' => 1,
             'tahun' => 2023,
             'gaji_pokok' => $guru->gaji_pokok,
-            'tunjangan' => 500000.00,
-            'potongan' => 100000.00,
-            'total_gaji' => ($guru->gaji_pokok + 500000.00 - 100000.00),
+            'tunjangan' => 500000.0,
+            'potongan' => 100000.0,
+            'total_gaji' => ($guru->gaji_pokok + 500000.0 - 100000.0),
             'tanggal_pembayaran' => Carbon::now()->toDateString(),
             'status_pembayaran' => 'Dibayar',
         ]);
