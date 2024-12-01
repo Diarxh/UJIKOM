@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Database\Seeders\AttendanceSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,6 +19,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(SlipGajiGuruTableSeeder::class);
         $this->call(SppTableSeeder::class);
-
+        $this->call(AttendanceSeeder::class);
     }
 }

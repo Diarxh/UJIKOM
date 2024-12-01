@@ -9,17 +9,17 @@ class Teacher extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'subject',
-        'hire_date',
-        'phone',
-        'email',
-        'gaji_pokok',
-        'tunjangan',
-        'potongan',
-        'total_gaji'
+        'name',  // Nama guru
+        'subject',  // Mata pelajaran
+        'gender',  // Jenis kelamin
+        'hire_date',  // Tanggal bergabung
+        'phone',  // Nomor telepon
+        'email',  // Email
+        'gaji_pokok',  // Gaji pokok
+        'tunjangan',  // Tunjangan
+        'potongan',  // Potongan
+        'total_gaji'  // Total gaji
     ];
-
 
     public function classes()
     {
