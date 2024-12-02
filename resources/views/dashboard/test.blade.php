@@ -176,6 +176,28 @@
                 </script>
 
             </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Fungsi untuk menyesuaikan ukuran sidebar
+                    function adjustSidebarWidth() {
+                        var sidebar = document.querySelector('.left-sidebar');
+                        var content = document.querySelector('#sidebarnav');
+                        var minWidth = 300; // Minimal width
+                        var maxWidth = 350; // Maximal width
+                        var newWidth = Math.min(Math.max(content.scrollWidth, minWidth), maxWidth) + 'px';
+                        sidebar.style.width = newWidth;
+                    }
+
+
+                    // Panggil fungsi setelah halaman di-load
+                    adjustSidebarWidth();
+
+                    // Jika ada perubahan pada konten, ulang penyesuaian ukuran
+                    var observer = new MutationObserver(adjustSidebarWidth);
+                    observer.observe(content, { childList: true, subtree: true });
+                });
+            </script>
+
             <!-- End Sidebar scroll-->
         </aside>
         <!--  Sidebar End -->
@@ -337,89 +359,98 @@
                                     </span>
                                 </h5>
                                 <div id="traffic-overview"></div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', (event) => {
-                                        const siswaCountPerDay = {!! json_encode($siswaCountPerDay) !!};
-                                        const guruCountPerDay = {!! json_encode($guruCountPerDay) !!};
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', (event) => {
+                                            const siswaCountPerDay = {!! json_encode($siswaCountPerDay) !!};
+                                            const guruCountPerDay = {!! json_encode($guruCountPerDay) !!};
 
-                                        // Pastikan nilai yang dikirim adalah integer
-                                        const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
-                                        const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
+                                            // Logging data untuk debug di console
+                                            console.log("Data jumlah siswa per hari:", siswaCountPerDay);
+                                            console.log("Data jumlah guru per hari:", guruCountPerDay);
 
-                                        // Data untuk grafik
-                                        var chart = {
-                                            series: [{
-                                                    name: "Siswa",
-                                                    data: siswaData,
-                                                },
-                                                {
-                                                    name: "Guru",
-                                                    data: guruData,
-                                                },
-                                            ],
-                                            chart: {
-                                                toolbar: {
-                                                    show: false,
-                                                },
-                                                type: "line",
-                                                fontFamily: "inherit",
-                                                foreColor: "#adb0bb",
-                                                height: 320,
-                                                stacked: false,
-                                            },
-                                            colors: ["#5F9EA0", "#FF69B4"],
-                                            dataLabels: {
-                                                enabled: false,
-                                            },
-                                            legend: {
-                                                show: false,
-                                            },
-                                            stroke: {
-                                                width: 2,
-                                                curve: "smooth",
-                                            },
-                                            grid: {
-                                                borderColor: "rgba(0,0,0,0.1)",
-                                                strokeDashArray: 3,
-                                                xaxis: {
-                                                    lines: {
+                                            // Pastikan nilai yang dikirim adalah integer
+                                            const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
+                                            const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
+
+                                            console.log("Jumlah siswa (data untuk chart):", siswaData);
+                                            console.log("Jumlah guru (data untuk chart):", guruData);
+
+                                            // Data untuk grafik
+                                            var chart = {
+                                                series: [
+                                                    {
+                                                        name: "Siswa",
+                                                        data: siswaData,
+                                                    },
+                                                    {
+                                                        name: "Guru",
+                                                        data: guruData,
+                                                    },
+                                                ],
+                                                chart: {
+                                                    toolbar: {
                                                         show: false,
                                                     },
+                                                    type: "line",
+                                                    fontFamily: "inherit",
+                                                    foreColor: "#adb0bb",
+                                                    height: 320,
+                                                    stacked: false,
                                                 },
-                                            },
-                                            xaxis: {
-                                                axisBorder: {
+                                                colors: ["#5F9EA0", "#FF69B4"],
+                                                dataLabels: {
+                                                    enabled: false,
+                                                },
+                                                legend: {
                                                     show: false,
                                                 },
-                                                axisTicks: {
-                                                    show: false,
+                                                stroke: {
+                                                    width: 2,
+                                                    curve: "smooth",
                                                 },
-                                                categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
-                                            },
-                                            yaxis: {
-                                                tickAmount: 4,
-                                            },
-                                            markers: {
-                                                strokeColor: ["#5F9EA0", "#FF69B4"],
-                                                strokeWidth: 2,
-                                            },
-                                            tooltip: {
-                                                theme: "dark",
-                                                y: {
-                                                    formatter: function(value) {
-                                                        return Math.floor(value); // Menampilkan tanpa desimal
+                                                grid: {
+                                                    borderColor: "rgba(0,0,0,0.1)",
+                                                    strokeDashArray: 3,
+                                                    xaxis: {
+                                                        lines: {
+                                                            show: false,
+                                                        },
+                                                    },
+                                                },
+                                                xaxis: {
+                                                    axisBorder: {
+                                                        show: false,
+                                                    },
+                                                    axisTicks: {
+                                                        show: false,
+                                                    },
+                                                    categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+                                                },
+                                                yaxis: {
+                                                    tickAmount: 4,
+                                                },
+                                                markers: {
+                                                    strokeColor: ["#00FFFF", "#FF1493"],
+                                                    strokeWidth: 2,
+                                                },
+                                                tooltip: {
+                                                    theme: "dark",
+                                                    y: {
+                                                        formatter: function (value) {
+                                                            return Math.floor(value); // Menampilkan tanpa desimal
+                                                        }
                                                     }
-                                                }
-                                            },
-                                        };
+                                                },
+                                            };
 
-                                        var chartInstance = new ApexCharts(
-                                            document.querySelector("#traffic-overview"),
-                                            chart
-                                        );
-                                        chartInstance.render();
-                                    });
-                                </script>
+                                            var chartInstance = new ApexCharts(
+                                                document.querySelector("#traffic-overview"),
+                                                chart
+                                            );
+                                            chartInstance.render();
+                                        });
+                                    </script>
+
                             </div>
                         </div>
                     </div>

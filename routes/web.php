@@ -18,9 +18,10 @@ Route::post('register', [UserManagementController::class, 'register'])->name('re
 use App\Http\Controllers\StaffTataUsahaController;
 
 Route::middleware(['auth', 'role:staff_tu'])->get('/dashboard', [StaffTataUsahaController::class, 'index'])->name('dashboard');
-Route::middleware(['auth', 'role:staff_tu'])->get('/dad', [StaffTataUsahaController::class, 'dad'])->name('dashboard');
+// Route::middleware(['auth', 'role:staff_tu'])->get('/dad', [StaffTataUsahaController::class, 'dad'])->name('dashboard');
 // Route untuk mengambil data siswa
 Route::get('/students', [StaffTataUsahaController::class, 'getStudents'])->name('students.index');
+Route::get('/manajemen-siswa', [StaffTataUsahaController::class, 'manajemenSiswa'])->name('manajemen-siswa');
 
 // Route untuk mengambil data guru
 Route::get('/get-data', [StaffTataUsahaController::class, 'getData'])->name('getData');

@@ -18,30 +18,54 @@ class AttendanceSeeder extends Seeder
      */
     public function run()
     {
-        // Data siswa dan guru (contoh)
+        // Ambil data siswa dan guru dari database
         $students = Student::pluck('id')->toArray();
         $teachers = Teacher::pluck('id')->toArray();
         $statuses = ['present', 'absent', 'late'];
 
-        $classIds = DB::table('classes')->pluck('id')->toArray();  // Ambil class_id dari tabel classes
+        // Ambil data kelas
+        $classIds = DB::table('classes')->pluck('id')->toArray(); // Pastikan tabel 'school_classes' benar
 
-        // Insert data absensi untuk siswa
+        // Jika tidak ada data kelas, siswa, atau guru, hentikan proses
+        if (empty($classIds)) {
+            $this->command->error('Data kelas kosong. Pastikan tabel school_classes memiliki data.');
+            return;
+        }
+        if (empty($students)) {
+            $this->command->error('Data siswa kosong. Pastikan tabel students memiliki data.');
+            return;
+        }
+        if (empty($teachers)) {
+            $this->command->error('Data guru kosong. Pastikan tabel teachers memiliki data.');
+            return;
+        }
+
+        // Seeder untuk absensi siswa
         foreach ($students as $studentId) {
             Attendance::create([
                 'student_id' => $studentId,
-                'class_id' => $classIds[array_rand($classIds)],  // Gunakan class_id yang valid
-                'date' => Carbon::now()->subDays(rand(0, 7)),
-                'status' => $statuses[array_rand($statuses)],
+                'teacher_id' => null,
+                'class_id' => $classIds[array_rand($classIds)], // Pilih class_id secara acak
+                'date' => Carbon::now()->subDays(rand(0, 7))->format('Y-m-d'), // Random 7 hari terakhir
+                'status' => $statuses[array_rand($statuses)], // Status random
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
+        // Seeder untuk absensi guru
         foreach ($teachers as $teacherId) {
             Attendance::create([
+                'student_id' => null,
                 'teacher_id' => $teacherId,
-                'class_id' => $classIds[array_rand($classIds)],  // Gunakan class_id yang valid
-                'date' => Carbon::now()->subDays(rand(0, 7)),
-                'status' => $statuses[array_rand($statuses)],
+                'class_id' => $classIds[array_rand($classIds)], // Pilih class_id secara acak
+                'date' => Carbon::now()->subDays(rand(0, 7))->format('Y-m-d'), // Random 7 hari terakhir
+                'status' => $statuses[array_rand($statuses)], // Status random
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
+
+        $this->command->info('Seeder absensi berhasil dijalankan!');
     }
 }

@@ -38,43 +38,80 @@ class StaffTataUsahaController extends Controller
         $slipGajiCount = User::count();
         $absensiSiswaCount = Attendance::count();
         $absensiGuruCount = Attendance::count();
-
-        // Data Absensi Siswa per Hari
+        // Data absensi siswa per hari dalam seminggu
         $siswaCountPerDay = Attendance::selectRaw('DAYOFWEEK(date) as day_of_week, COUNT(*) as count')
-            ->whereNotNull('student_id')
-            ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
+            ->whereNotNull('student_id') // Hanya absensi siswa
+            ->whereBetween('date', [now()->startOfWeek()->format('Y-m-d'), now()->endOfWeek()->format('Y-m-d')])
             ->groupBy('day_of_week')
             ->orderBy('day_of_week')
             ->get()
             ->mapWithKeys(function ($item) {
                 $days = [
-                    2 => 'Senin', 3 => 'Selasa', 4 => 'Rabu', 5 => 'Kamis', 6 => 'Jumat', 7 => 'Sabtu'
+                    1 => 'Minggu',
+                    2 => 'Senin',
+                    3 => 'Selasa',
+                    4 => 'Rabu',
+                    5 => 'Kamis',
+                    6 => 'Jumat',
+                    7 => 'Sabtu'
                 ];
                 return [$days[$item->day_of_week] => intval($item->count)];
             })
-            ->toArray();  // Convert to array
+            ->toArray();
 
-        // Data Absensi Guru per Hari
+        // Isi nilai nol untuk hari yang kosong
+        $siswaCountPerDay = collect([
+            'Senin' => 0,
+            'Selasa' => 0,
+            'Rabu' => 0,
+            'Kamis' => 0,
+            'Jumat' => 0,
+            'Sabtu' => 0
+        ])->merge($siswaCountPerDay)->toArray();
+
+        // Data absensi guru per hari dalam seminggu
         $guruCountPerDay = Attendance::selectRaw('DAYOFWEEK(date) as day_of_week, COUNT(*) as count')
-            ->whereNotNull('teacher_id')
-            ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
+            ->whereNotNull('teacher_id') // Hanya absensi guru
+            ->whereBetween('date', [now()->startOfWeek()->format('Y-m-d'), now()->endOfWeek()->format('Y-m-d')])
             ->groupBy('day_of_week')
             ->orderBy('day_of_week')
             ->get()
             ->mapWithKeys(function ($item) {
                 $days = [
-                    2 => 'Senin', 3 => 'Selasa', 4 => 'Rabu', 5 => 'Kamis', 6 => 'Jumat', 7 => 'Sabtu'
+                    1 => 'Minggu',
+                    2 => 'Senin',
+                    3 => 'Selasa',
+                    4 => 'Rabu',
+                    5 => 'Kamis',
+                    6 => 'Jumat',
+                    7 => 'Sabtu'
                 ];
                 return [$days[$item->day_of_week] => intval($item->count)];
             })
-            ->toArray();  // Convert to array
+            ->toArray();
+
+        // Isi nilai nol untuk hari yang kosong
+        $guruCountPerDay = collect([
+            'Senin' => 0,
+            'Selasa' => 0,
+            'Rabu' => 0,
+            'Kamis' => 0,
+            'Jumat' => 0,
+            'Sabtu' => 0
+        ])->merge($guruCountPerDay)->toArray();
+
 
         // Mengirim data ke view
         return view('dashboard.test', compact(
-            'siswaCount', 'guruCount',
-            'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount',
-            'sppData', 'gajiData',
-            'siswaCountPerDay', 'guruCountPerDay'
+            'siswaCount',
+            'guruCount',
+            'slipGajiCount',
+            'absensiSiswaCount',
+            'absensiGuruCount',
+            'sppData',
+            'gajiData',
+            'siswaCountPerDay',
+            'guruCountPerDay'
         ));
     }
 
@@ -92,43 +129,6 @@ class StaffTataUsahaController extends Controller
 
         return response()->json($data);
     }
+
+
 }
-
-//     public function dad(Request $request)
-//     {
-//         // Mencari data totalsiswa, total kelas, dan absensi hari ini
-//         // Data untuk chart SPP (contoh: jumlah pembayaran per bulan)
-//         $sppData = DB::table('spp')
-//             ->selectRaw('MONTH(tanggal_bayar) AS month, SUM(jumlah_bayar) AS total')
-//             ->groupBy(DB::raw('MONTH(tanggal_bayar)'))
-//             ->orderBy('month')
-//             ->get();
-
-//         $gajiData = SlipGajiGuru::selectRaw('MONTH(tanggal_pembayaran) as month, SUM(total_gaji) as total')
-//             ->groupBy('month')
-//             ->orderBy('month')
-//             ->get();
-//         // dd($gajiData);
-//         $siswaCount = Student::count();
-//         $guruCount = Teacher::count();
-//         $slipGajiCount = User::count();
-//         $absensiSiswaCount = Attendance::count();
-//         $absensiGuruCount = Attendance::count();
-
-//         // Mengirim data ke view
-//         return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData'));
-//     }
-
-//     // Tambahkan method CRUD lainnya seperti create, edit, delete
-//     //  BARUUUUUUUU
-
-//     // public function index(Request $request)
-//     // {
-//     //     // Menghitung jumlah siswa dan guru
-//     //     $siswaCount = Student::count();
-//     //     $guruCount = Teacher::count();
-
-//     //     // Mengirim data ke view
-//     //     return view('dashboard.test', compact('siswaCount', 'guruCount'));
-//     // }
-// }
