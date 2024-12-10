@@ -70,7 +70,7 @@ class StaffTataUsahaController extends Controller
             ->toArray();  // Convert to array
 
         // Mengirim data ke view
-        return view('dashboard.test', compact(
+        return view('dashboard.staff-tu-dashboard', compact(
             'siswaCount', 'guruCount',
             'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount',
             'sppData', 'gajiData',
@@ -92,43 +92,75 @@ class StaffTataUsahaController extends Controller
 
         return response()->json($data);
     }
+    // dalam file controller StaffTataUsahaController.php
+
+    public function menu($file)
+    {
+        if ($file == 'manajemen-guru') {
+            $data = $this->manajemenGuru();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'manajemen-siswa') {
+            $data = $this->manajemenSiswa();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'manajemen-kelas') {
+            $data = $this->manajemenKelas();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'manajemen-ekstrakurikuler') {
+            $data = $this->manajemenEkstrakurikuler();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'manajemen-keuangan') {
+            $data = $this->manajemenKeuangan();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'manajemen-laporan') {
+            $data = $this->manajemenLaporan();
+            return view('resource.' . $file . '.index', compact('data'));
+        } elseif ($file == 'dashboard') {
+            $data = $this->dashboard();
+            return view('resource.' . $file . '.index', compact('data'));
+        } else {
+            return view('resource.' . $file . '.index');
+        }
+    }
+
+    public function manajemenGuru()
+    {
+        $data = Teacher::all();
+        return $data;
+    }
+
+    public function manajemenSiswa()
+    {
+        $data = Student::all();
+        return $data;
+    }
+
+    public function manajemenKelas()
+    {
+        $data = SchoolClass::all();
+        return $data;
+    }
+
+    public function manajemenEkstrakurikuler()
+    {
+        $data = Attendance::all();
+        return $data;
+    }
+
+    public function manajemenKeuangan()
+    {
+        $data = spp::all();
+        return $data;
+    }
+
+    public function manajemenLaporan()
+    {
+        $data = SlipGajiGuru::all();
+        return $data;
+    }
+
+    public function dashboard()
+    {
+        $data = Dashboard::all();
+        return $data;
+    }
 }
-
-//     public function dad(Request $request)
-//     {
-//         // Mencari data totalsiswa, total kelas, dan absensi hari ini
-//         // Data untuk chart SPP (contoh: jumlah pembayaran per bulan)
-//         $sppData = DB::table('spp')
-//             ->selectRaw('MONTH(tanggal_bayar) AS month, SUM(jumlah_bayar) AS total')
-//             ->groupBy(DB::raw('MONTH(tanggal_bayar)'))
-//             ->orderBy('month')
-//             ->get();
-
-//         $gajiData = SlipGajiGuru::selectRaw('MONTH(tanggal_pembayaran) as month, SUM(total_gaji) as total')
-//             ->groupBy('month')
-//             ->orderBy('month')
-//             ->get();
-//         // dd($gajiData);
-//         $siswaCount = Student::count();
-//         $guruCount = Teacher::count();
-//         $slipGajiCount = User::count();
-//         $absensiSiswaCount = Attendance::count();
-//         $absensiGuruCount = Attendance::count();
-
-//         // Mengirim data ke view
-//         return view('dashboard.staff-tu-dashboard', compact('siswaCount', 'guruCount', 'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount', 'sppData', 'gajiData'));
-//     }
-
-//     // Tambahkan method CRUD lainnya seperti create, edit, delete
-//     //  BARUUUUUUUU
-
-//     // public function index(Request $request)
-//     // {
-//     //     // Menghitung jumlah siswa dan guru
-//     //     $siswaCount = Student::count();
-//     //     $guruCount = Teacher::count();
-
-//     //     // Mengirim data ke view
-//     //     return view('dashboard.test', compact('siswaCount', 'guruCount'));
-//     // }
-// }

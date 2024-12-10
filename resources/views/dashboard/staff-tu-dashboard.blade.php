@@ -1,1074 +1,830 @@
-@extends('layouts.dashboard.app')
-{{--  @('resources/js/app.js')  --}}
-@section('content')
-    <div class="main-header">
-        <div class="main-header-logo">
-            <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
-                <a href="index.html" class="logo">
-                    <img src="assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" height="20" />
-                </a>
-                <div class="nav-toggle">
-                    <button class="btn btn-toggle toggle-sidebar">
-                        <i class="gg-menu-right"></i>
-                    </button>
-                    <button class="btn btn-toggle sidenav-toggler">
-                        <i class="gg-menu-left"></i>
-                    </button>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SeoDash Free Bootstrap Admin Template by Adminmart</title>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('test/assets/images/logos/seodashlogo.png') }}" />
+    <link rel="stylesheet" href="{{ asset('test/assets/css/styles.min.css') }}" />
+
+    <!-- Fonts and icons -->
+    <script src="{{ asset('tu/assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script src="https://kit.fontawesome.com/0d0cc84b42.js" crossorigin="anonymous"></script>
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.0/iconify-icon.min.js"></script>
+    <!-- Laravel Blade -->
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    {{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> --}}
+
+
+    {{-- TEST --}}
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('tu/assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('tu/assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('tu/assets/css/kaiadmin.min.css') }}" />
+
+</head>
+
+<body>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="./index.html" class="text-nowrap logo-img">
+                        <img src="{{ asset('test/assets/images/logos/logo-light.svg') }}" alt="" />
+                    </a>
+                    <div class="cursor-pointer close-btn d-xl-none d-block sidebartoggler" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
+                    </div>
                 </div>
-                <button class="topbar-toggler more">
-                    <i class="gg-more-vertical-alt"></i>
-                </button>
-            </div>
-            <!-- End Logo Header -->
-        </div>
-        <!-- Navbar Header -->
-        <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-            <div class="container-fluid">
-                <nav class="p-0 navbar navbar-header-left navbar-expand-lg navbar-form nav-search d-none d-lg-flex">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button type="submit" class="btn btn-search pe-1">
-                                <i class="fa fa-search search-icon"></i>
-                            </button>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                            <span class="hide-menu">Home</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link side-dash" href="{{ url('/dashboard') }}" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:home-smile-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                            <span class="hide-menu">Pengelolaan Data</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="##" data-file="manajemen-siswa" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"
+                                        class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manajemen Siswa</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="##" data-file="manajemen-guru" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:square-academic-cap-2-bold-duotone"
+                                        class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manajemen Guru & Karyawan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="##" data-file="manajemen-kelas" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:home-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manajemen Kelas</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="##" data-file="manajemen-Ekstrakurikuler"
+                                aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:flag-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manajemen Ekstrakurikuler</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" hhref="##" data-file="manajemen-keuangan" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:money-bag-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Manajemen Keuangan</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                            <span class="hide-menu">Laporan & Pengaturan</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="##" data-file="manajemen-laporan" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:document-text-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Laporan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url('/settings') }}" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:settings-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Pengaturan</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"
+                                class="fs-6"></iconify-icon>
+                            <span class="hide-menu">AUTH</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url('/login') }}" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:login-3-bold-duotone" class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Login</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ url('/register') }}" aria-expanded="false">
+                                <span>
+                                    <iconify-icon icon="solar:user-plus-rounded-bold-duotone"
+                                        class="fs-6"></iconify-icon>
+                                </span>
+                                <span class="hide-menu">Register</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="mt-7 mb-7 unlimited-access hide-menu bg-primary-subtle position-relative rounded-3">
+                        <div class="d-flex">
+                            <div class="unlimited-access-title me-3">
+                                <h6 class="mb-6 fw-semibold fs-4 text-dark w-75">Upgrade to pro</h6>
+                                <a href="##" target="_blank" class="btn btn-primary fs-2 fw-semibold lh-sm">Buy
+                                    Pro</a>
+                            </div>
+                            <div class="unlimited-access-img">
+                                <img src="{{ asset('test/assets/images/backgrounds/rocket.png') }}" alt=""
+                                    class="img-fluid">
+                            </div>
                         </div>
-                        <input type="text" placeholder="Search ..." class="form-control" />
                     </div>
                 </nav>
+                <!-- End Sidebar navigation -->
 
-                <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                    <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                            aria-expanded="false" aria-haspopup="true">
-                            <i class="fa fa-search"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-search animated fadeIn">
-                            <form class="navbar-left navbar-form nav-search">
-                                <div class="input-group">
-                                    <input type="text" placeholder="Search ..." class="form-control" />
-                                </div>
-                            </form>
-                        </ul>
-                    </li>
-                    <li class="nav-item topbar-icon dropdown hidden-caret">
-                        <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-envelope"></i>
-                        </a>
-                        <ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
-                            <li>
-                                <div class="dropdown-title d-flex justify-content-between align-items-center">
-                                    Messages
-                                    <a href="#" class="small">Mark all as read</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="message-notif-scroll scrollbar-outer">
-                                    <div class="notif-center">
-                                        <a href="#">
-                                            <div class="notif-img">
-                                                <img src="assets/img/jm_denis.jpg" alt="Img Profile" />
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="subject">Jimmy Denis</span>
-                                                <span class="block"> How are you ? </span>
-                                                <span class="time">5 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-img">
-                                                <img src="assets/img/chadengle.jpg" alt="Img Profile" />
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="subject">Chad</span>
-                                                <span class="block"> Ok, Thanks ! </span>
-                                                <span class="time">12 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-img">
-                                                <img src="assets/img/mlane.jpg" alt="Img Profile" />
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="subject">Jhon Doe</span>
-                                                <span class="block">
-                                                    Ready for the meeting today...
-                                                </span>
-                                                <span class="time">12 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-img">
-                                                <img src="assets/img/talha.jpg" alt="Img Profile" />
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="subject">Talha</span>
-                                                <span class="block"> Hi, Apa Kabar ? </span>
-                                                <span class="time">17 minutes ago</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <a class="see-all" href="javascript:void(0);">See all messages<i
-                                        class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item topbar-icon dropdown hidden-caret">
-                        <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-bell"></i>
-                            <span class="notification">4</span>
-                        </a>
-                        <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
-                            <li>
-                                <div class="dropdown-title">
-                                    You have 4 new notification
-                                </div>
-                            </li>
-                            <li>
-                                <div class="notif-scroll scrollbar-outer">
-                                    <div class="notif-center">
-                                        <a href="#">
-                                            <div class="notif-icon notif-primary">
-                                                <i class="fa fa-user-plus"></i>
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="block"> New user registered </span>
-                                                <span class="time">5 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-icon notif-success">
-                                                <i class="fa fa-comment"></i>
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="block">
-                                                    Rahmad commented on Admin
-                                                </span>
-                                                <span class="time">12 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-img">
-                                                <img src="assets/img/profile2.jpg" alt="Img Profile" />
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="block">
-                                                    Reza send messages to you
-                                                </span>
-                                                <span class="time">12 minutes ago</span>
-                                            </div>
-                                        </a>
-                                        <a href="#">
-                                            <div class="notif-icon notif-danger">
-                                                <i class="fa fa-heart"></i>
-                                            </div>
-                                            <div class="notif-content">
-                                                <span class="block"> Farrah liked Admin </span>
-                                                <span class="time">17 minutes ago</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <a class="see-all" href="javascript:void(0);">See all notifications<i
-                                        class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item topbar-icon dropdown hidden-caret">
-                        <a class="nav-link" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                            <i class="fas fa-layer-group"></i>
-                        </a>
-                        <div class="dropdown-menu quick-actions animated fadeIn">
-                            <div class="quick-actions-header">
-                                <span class="mb-1 title">Quick Actions</span>
-                                <span class="subtitle op-7">Shortcuts</span>
-                            </div>
-                            <div class="quick-actions-scroll scrollbar-outer">
-                                <div class="quick-actions-items">
-                                    <div class="m-0 row">
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-danger rounded-circle">
-                                                    <i class="far fa-calendar-alt"></i>
-                                                </div>
-                                                <span class="text">Calendar</span>
-                                            </div>
-                                        </a>
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-warning rounded-circle">
-                                                    <i class="fas fa-map"></i>
-                                                </div>
-                                                <span class="text">Maps</span>
-                                            </div>
-                                        </a>
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-info rounded-circle">
-                                                    <i class="fas fa-file-excel"></i>
-                                                </div>
-                                                <span class="text">Reports</span>
-                                            </div>
-                                        </a>
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-success rounded-circle">
-                                                    <i class="fas fa-envelope"></i>
-                                                </div>
-                                                <span class="text">Emails</span>
-                                            </div>
-                                        </a>
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-primary rounded-circle">
-                                                    <i class="fas fa-file-invoice-dollar"></i>
-                                                </div>
-                                                <span class="text">Invoice</span>
-                                            </div>
-                                        </a>
-                                        <a class="p-0 col-6 col-md-4" href="#">
-                                            <div class="quick-actions-item">
-                                                <div class="avatar-item bg-secondary rounded-circle">
-                                                    <i class="fas fa-credit-card"></i>
-                                                </div>
-                                                <span class="text">Payments</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-
-                    <li class="nav-item topbar-user dropdown hidden-caret">
-                        <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
-                            aria-expanded="false">
-                            <div class="avatar-sm">
-                                <img src="assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
-                            </div>
-                            <span class="profile-username">
-                                <span class="op-7">Hi,</span>
-                                <span class="fw-bold">Hizrian</span>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user animated fadeIn">
-                            <div class="dropdown-user-scroll scrollbar-outer">
-                                <li>
-                                    <div class="user-box">
-                                        <div class="avatar-lg">
-                                            <img src="assets/img/profile.jpg" alt="image profile"
-                                                class="rounded avatar-img" />
-                                        </div>
-                                        <div class="u-text">
-                                            <h4>Hizrian</h4>
-                                            <p class="text-muted">hello@example.com</p>
-                                            <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
-                                                Profile</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">My Profile</a>
-                                    <a class="dropdown-item" href="#">My Balance</a>
-                                    <a class="dropdown-item" href="#">Inbox</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Account Setting</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Logout</a>
-                                </li>
-                            </div>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <!-- End Navbar -->
-    </div>
-
-    <div class="container">
-        <div class="page-inner">
-            <div class="pt-2 pb-4 d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                <div>
-                    <h3 class="mb-3 fw-bold">Dashboard</h3>
-                    <h6 class="mb-2 op-7">Free Bootstrap 5 Admin Dashboard</h6>
-                </div>
-                <div class="py-2 ms-md-auto py-md-0">
-                    <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                    <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-                </div>
-            </div>
-            {{--  TAMPILAN IKON  --}}
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="text-center icon-big icon-primary bubble-shadow-small">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Siswa</p>
-                                        <h4 class="card-title">{{ $siswaCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="text-center icon-big icon-info bubble-shadow-small">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Guru</p>
-                                        <h4 class="card-title">{{ $guruCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="text-center icon-big icon-success bubble-shadow-small">
-                                        <i class="fas fa-file-invoice"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Slip Gaji</p>
-                                        <h4 class="card-title">{{ $slipGajiCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="text-center icon-big icon-secondary bubble-shadow-small">
-                                        <i class="far fa-check-circle"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Absensi Siswa</p>
-                                        <h4 class="card-title">{{ $absensiSiswaCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="text-center icon-big icon-secondary bubble-shadow-small">
-                                        <i class="far fa-check-circle"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Absensi Guru</p>
-                                        <h4 class="card-title">{{ $absensiGuruCount }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card card-round">
-                        <div class="card-header">
-                            <div class="card-head-row">
-                                <div class="card-title">Statistik Pembayaran SPP dan Gaji Guru</div>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-label-success btn-round btn-sm me-2">
-                                        <span class="btn-label">
-                                            <i class="fa fa-pencil"></i>
-                                        </span>
-                                        Export
-                                    </a>
-                                    <a href="#" class="btn btn-label-info btn-round btn-sm">
-                                        <span class="btn-label">
-                                            <i class="fa fa-print"></i>
-                                        </span>
-                                        Print
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container" style="min-height: 375px">
-                                <canvas id="statisticsChart"></canvas>
-                            </div>
-                            <div id="myChartLegend"></div>
-                        </div>
-                    </div>
-                </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', (event) => {
-                        const sppData = {!! json_encode($sppData) !!};
-                        const gajiData = {!! json_encode($gajiData) !!};
-                        window.createStatisticsChart(sppData, gajiData);
+                        // Menambahkan ikon dari Iconify
+                        document.querySelectorAll('.iconify').forEach(function(icon) {
+                            icon.style.color = icon.getAttribute('data-icon-color') || '#000';
+                            icon.style.width = icon.getAttribute('data-icon-width') || '24px';
+                            icon.style.height = icon.getAttribute('data-icon-height') || '24px';
+                        });
                     });
-                </script>2
-                {{--  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-              <script>
-                // Data SPP dari Laravel
-                const sppData = {!! json_encode($sppData) !!};
-                const sppLabels = sppData.map(item => {
-                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                  return months[item.month - 1];
-                });
-                const sppValues = sppData.map(item => item.total);
+                </script>
 
-                // Data Gaji Guru dari Laravel
-                const gajiData = {!! json_encode($gajiData) !!};
-                const gajiLabels = gajiData.map(item => {
-                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                  return months[item.month - 1];
-                });
-                const gajiValues = gajiData.map(item => item.total);
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!--  Sidebar End -->
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header main-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse"
+                                href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                                <i class="ti ti-bell-ringing"></i>
+                                <div class="notification bg-primary rounded-circle"></div>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="px-0 navbar-collapse justify-content-end" id="navbarNav">
+                        <ul class="flex-row navbar-nav ms-auto align-items-center justify-content-end">
+                            <a href="#" target="_blank" class="btn btn-primary me-2"><span
+                                    class="d-none d-md-block">Check Pro Version</span> <span
+                                    class="d-block d-md-none">Pro</span></a>
+                            <a href="#" target="_blank" class="btn btn-success"><span
+                                    class="d-none d-md-block">Download Free </span> <span
+                                    class="d-block d-md-none">Free</span></a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ asset('test/assets/images/profile/user-1.jpg') }}" alt=""
+                                        width="35" height="35" class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
+                                    aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <a href="javascript:void(0)"
+                                            class="gap-2 d-flex align-items-center dropdown-item">
+                                            <i class="ti ti-user fs-6"></i>
+                                            <p class="mb-0 fs-3">My Profile</p>
+                                        </a>
+                                        <a href="javascript:void(0)"
+                                            class="gap-2 d-flex align-items-center dropdown-item">
+                                            <i class="ti ti-mail fs-6"></i>
+                                            <p class="mb-0 fs-3">My Account</p>
+                                        </a>
+                                        <a href="javascript:void(0)"
+                                            class="gap-2 d-flex align-items-center dropdown-item">
+                                            <i class="ti ti-list-check fs-6"></i>
+                                            <p class="mb-0 fs-3">My Task</p>
+                                        </a>
+                                        <a href="./authentication-login.html"
+                                            class="mx-3 mt-2 btn btn-outline-primary d-block">Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                <div class="row">
+                    {{--  TAMPILAN IKON  --}}
+                    <div class="row tampilan_ikon_dashboard">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="card card-stats card-primary card-round">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="text-center icon-big">
+                                                    <i class="fas fa-users"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-7 col-stats">
+                                                <div class="numbers">
+                                                    <p class="card-category">Siswa</p>
+                                                    <h4 class="card-title">{{ $siswaCount }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="card card-stats card-info card-round">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="text-center icon-big">
+                                                    <i class="fas fa-chalkboard-teacher"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col col-stats ms-3 ms-sm-0">
+                                                <div class="numbers">
+                                                    <p class="card-category">Guru</p>
+                                                    <h4 class="card-title">{{ $guruCount }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="card card-stats card-success card-round">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="text-center icon-big">
+                                                    <i class="far fa-check-circle"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col col-stats ms-3 ms-sm-0">
+                                                <div class="numbers">
+                                                    <p class="card-category">Absensi Guru</p>
+                                                    <h4 class="card-title">{{ $absensiGuruCount }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="card card-stats card-secondary card-round">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="text-center icon-big">
+                                                    <i class="far fa-check-circle"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col col-stats ms-3 ms-sm-0">
+                                                <div class="numbers">
+                                                    <p class="card-category">Absensi Guru</p>
+                                                    <h4 class="card-title">{{ $absensiGuruCount }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- trafix  absensi --}}
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="gap-2 mb-4 card-title d-flex align-items-center">
+                                    Traffic Overview
+                                    <span>
+                                        <iconify-icon icon="solar:question-circle-bold" class="fs-7 d-flex text-muted"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-custom-class="tooltip-success"
+                                            data-bs-title="Traffic Overview"></iconify-icon>
+                                    </span>
+                                </h5>
+                                <div id="traffic-overview"></div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', (event) => {
+                                        const siswaCountPerDay = {!! json_encode($siswaCountPerDay) !!};
+                                        const guruCountPerDay = {!! json_encode($guruCountPerDay) !!};
 
-                var ctx = document.getElementById('statisticsChart').getContext('2d');
+                                        // Pastikan nilai yang dikirim adalah integer
+                                        const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
+                                        const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
 
-                var statisticsChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                      labels: sppLabels,
-                      datasets: [{
-                        label: "Pembayaran SPP",
-                        borderColor: '#f3545d',
-                        pointBackgroundColor: 'rgba(243, 84, 93, 0.6)',
-                        pointRadius: 0,
-                        backgroundColor: 'rgba(243, 84, 93, 0.4)',
-                        legendColor: '#f3545d',
-                        fill: true,
-                        borderWidth: 2,
-                        data: sppValues
-                      }, {
-                        label: "Total Gaji Guru",
-                        borderColor: '#fdaf4b',
-                        pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
-                        pointRadius: 0,
-                        backgroundColor: 'rgba(253, 175, 75, 0.4)',
-                        legendColor: '#fdaf4b',
-                        fill: true,
-                        borderWidth: 2,
-                        data: gajiValues
-                      }]
-                    },
-                    options: {
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                          boxWidth: 12,
-                          padding: 20,
-                          usePointStyle: true,
-                          fontColor: '#9aa0ac'
-                        }
-                      },
-                      tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                        titleFontColor: '#888',
-                        bodyFontColor: '#555',
-                        titleFontSize: 12,
-                        bodyFontSize: 15,
-                        backgroundColor: 'rgba(256,256,256,0.95)',
-                        titleMarginBottom: 10,
-                        bodySpacing: 10,
-                        yPadding: 15,
-                        xPadding: 15,
-                        borderColor: 'rgba(220, 220, 220, 0.9)',
-                        borderWidth: 2,
-                        caretPadding: 10
-                      },
-                      hover: {
-                        mode: 'nearest',
-                        intersect: true
-                      },
-                      layout: {
-                        padding: {
-                          left: 5,
-                          right: 5,
-                          top: 15,
-                          bottom: 15
-                        }
-                      },
-                      scales: {
-                        yAxes: [{
-                          ticks: {
-                            fontColor: "#9aa0ac",
-                            fontStyle: "500",
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            padding: 10,
-                            callback: function(value, index, values) {
-                              if (parseInt(value) >= 1000) {
-                                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                              } else {
-                                return value;
-                              }
+                                        // Data untuk grafik
+                                        var chart = {
+                                            series: [{
+                                                    name: "Siswa",
+                                                    data: siswaData,
+                                                },
+                                                {
+                                                    name: "Guru",
+                                                    data: guruData,
+                                                },
+                                            ],
+                                            chart: {
+                                                toolbar: {
+                                                    show: false,
+                                                },
+                                                type: "line",
+                                                fontFamily: "inherit",
+                                                foreColor: "#adb0bb",
+                                                height: 320,
+                                                stacked: false,
+                                            },
+                                            colors: ["#5F9EA0", "#FF69B4"],
+                                            dataLabels: {
+                                                enabled: false,
+                                            },
+                                            legend: {
+                                                show: false,
+                                            },
+                                            stroke: {
+                                                width: 2,
+                                                curve: "smooth",
+                                            },
+                                            grid: {
+                                                borderColor: "rgba(0,0,0,0.1)",
+                                                strokeDashArray: 3,
+                                                xaxis: {
+                                                    lines: {
+                                                        show: false,
+                                                    },
+                                                },
+                                            },
+                                            xaxis: {
+                                                axisBorder: {
+                                                    show: false,
+                                                },
+                                                axisTicks: {
+                                                    show: false,
+                                                },
+                                                categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+                                            },
+                                            yaxis: {
+                                                tickAmount: 4,
+                                            },
+                                            markers: {
+                                                strokeColor: ["#5F9EA0", "#FF69B4"],
+                                                strokeWidth: 2,
+                                            },
+                                            tooltip: {
+                                                theme: "dark",
+                                                y: {
+                                                    formatter: function(value) {
+                                                        return Math.floor(value); // Menampilkan tanpa desimal
+                                                    }
+                                                }
+                                            },
+                                        };
+
+                                        var chartInstance = new ApexCharts(
+                                            document.querySelector("#traffic-overview"),
+                                            chart
+                                        );
+                                        chartInstance.render();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="text-center card-body">
+                                <img src="{{ asset('test/assets/images/backgrounds/product-tip.png') }}"
+                                    alt="image" class="img-fluid" width="205">
+                                <h4 class="mt-7">Productivity Tips!</h4>
+                                <p class="mt-2 mb-3 card-subtitle">Duis at orci justo nulla in libero id leo
+                                    molestie sodales phasellus justo.</p>
+                                <button class="mb-3 btn btn-primary">View All Tips</button>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- table siswa dan guru --}}
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Multi Filter Select</h4>
+                                <select id="dataType" class="form-select" style="width: 200px;">
+                                    <option value="students">Students</option>
+                                    <option value="teachers">Teachers</option>
+                                </select>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="multi-filter-select" class="table display table-striped table-hover">
+                                        <thead>
+                                            <tr id="table-head">
+                                                <!-- Kolom akan diisi dinamis -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data akan diisi menggunakan JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Core JS Files -->
+                        <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js') }}"></script>
+                        <script src="{{ asset('tu/assets/js/core/popper.min.js') }}"></script>
+                        <script src="{{ asset('tu/assets/js/core/bootstrap.min.js') }}"></script>
+                        <script src="{{ asset('tu/assets/js/plugin/datatables/datatables.min.js') }}"></script>
+                        <script>
+                            $(document).ready(function() {
+                                        // Debug untuk memeriksa apakah jQuery dan DataTable terdeteksi
+                                        console.log("jQuery version:", $.fn.jquery); // Output: 3.7.1
+                                        console.log("DataTable plugin exists:", typeof $.fn.DataTable === "function"); // Output: true
+
+                                        let table;
+
+                                        // Mapping kolom untuk tiap tipe data
+                                        const columnsMap = {
+                                            students: ["Nama", "Kelas", "Jenis Kelamin", "Tanggal Masuk", "Telepon"],
+                                            teachers: ["Nama", "Mata Pelajaran", "Jenis Kelamin", "Tanggal Bergabung", "Telepon"]
+                                        };
+
+                                        const fieldsMap = {
+                                            students: ["name", "class_id", "gender", "created_at", "phone"],
+                                            teachers: ["name", "subject", "gender", "created_at", "phone"]
+                                        };
+
+                                        // Fungsi untuk mengubah header tabel
+                                        function updateTableHead(type) {
+                                            const headers = columnsMap[type] || [];
+                                            const tableHead = $("#table-head");
+                                            tableHead.empty(); // Hapus isi lama
+                                            headers.forEach(header => {
+                                                tableHead.append(`<th>${header}</th>`);
+                                            });
+                                        }
+
+                                        // Fungsi untuk memuat data ke tabel
+                                        function loadData(type) {
+                                            if (table) {
+                                                table.clear().destroy(); // Reset DataTable jika sudah ada
+                                            }
+
+                                            console.log(`Fetching data for type: ${type}`); // Debug AJAX request
+                                            $.ajax({
+                                                url: `{{ route('getData') }}`,
+                                                type: "GET",
+                                                data: {
+                                                    type: type
+                                                },
+                                                success: function(response) {
+                                                    console.log("Data received:", response);
+
+                                                    const data = response || [];
+                                                    const tbody = $("#multi-filter-select tbody");
+                                                    tbody.empty();
+
+                                                    // Isi tabel menggunakan data
+                                                    data.forEach(item => {
+                                                        let rowData = '<tr>';
+                                                        fieldsMap[type].forEach(field => {
+                                                            // Format tanggal jika kolom adalah created_at
+                                                            let cellData = field === 'created_at' ? new Date(item[
+                                                                field]).toLocaleDateString() : item[field];
+                                                            rowData += `<td>${cellData}</td>`;
+                                                        });
+                                                        rowData += '</tr>';
+                                                        tbody.append(rowData);
+                                                    });
+
+                                                    // Inisialisasi ulang DataTable dengan fitur sorting dan filter suggestion
+                                                    table = $("#multi-filter-select").DataTable({
+                                                        pageLength: 5, // Mengatur panjang halaman menjadi 5
+                                                        initComplete: function() {
+                                                            this.api()
+                                                                .columns()
+                                                                .every(function() {
+                                                                    var column = this;
+                                                                    var select = $(
+                                                                            '<select class="form-select"><option value="">Semua</option></select>'
+                                                                        )
+                                                                        .appendTo($(column
+                                                                            .header())) // Tambahkan ke header kolom
+                                                                        .on("change", function() {
+                                                                            var val = $.fn.dataTable.util
+                                                                                .escapeRegex($(this).val());
+
+                                                                            column
+                                                                                .search(val ? "^" + val + "$" :
+                                                                                    "", true, false)
+                                                                                .draw();
+                                                                        });
+
+                                                                    column
+                                                                        .data()
+                                                                        .unique()
+                                                                        .sort()
+                                                                        .each(function(d, j) {
+                                                                            select.append(
+                                                                                '<option value="' + d +
+                                                                                '">' + d + "</option>"
+                                                                            );
+                                                                            console.log(
+                                                                                "Column data for filtering:",
+                                                                                column.data().unique()
+                                                                                .toArray());
+
+                                                                        });
+                                                                });
+                                                        },
+                                                    });
+                                                },
+                                                error: function(xhr, status, error) {
+                                                    console.error("Error fetching data:", xhr.responseText || error);
+                                                }
+                                            });
+                                        }
+
+                                        // Inisialisasi awal untuk "students"
+                                        updateTableHead("students");
+                                        loadData("students");
+
+                                        // Event listener untuk dropdown
+                                        $("#dataType").change(function() {
+                                            const selectedType = $(this).val();
+                                            updateTableHead(selectedType);
+                                            loadData(selectedType);
+                                        });
+                        </script>
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="gap-2 pb-3 mb-5 card-title d-flex align-items-center">Sessions by
+                                    device<span><iconify-icon icon="solar:question-circle-bold"
+                                            class="fs-7 d-flex text-muted" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" data-bs-custom-class="tooltip-success"
+                                            data-bs-title="Locations"></iconify-icon></span>
+                                </h5>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <iconify-icon icon="solar:laptop-minimalistic-line-duotone"
+                                            class="fs-7 d-flex text-primary"></iconify-icon>
+                                        <span class="mt-2 fs-11 d-block text-nowrap">Computers</span>
+                                        <h4 class="mt-1 mb-0">87%</h4>
+                                    </div>
+                                    <div class="col-4">
+                                        <iconify-icon icon="solar:smartphone-line-duotone"
+                                            class="fs-7 d-flex text-secondary"></iconify-icon>
+                                        <span class="mt-2 fs-11 d-block text-nowrap">Smartphone</span>
+                                        <h4 class="mt-1 mb-0">9.2%</h4>
+                                    </div>
+                                    <div class="col-4">
+                                        <iconify-icon icon="solar:tablet-line-duotone"
+                                            class="fs-7 d-flex text-success"></iconify-icon>
+                                        <span class="mt-2 fs-11 d-block text-nowrap">Tablets</span>
+                                        <h4 class="mt-1 mb-0">3.1%</h4>
+                                    </div>
+                                </div>
+
+                                <div class="gap-4 pt-2 mt-7 vstack">
+                                    <div>
+                                        <div class="hstack justify-content-between">
+                                            <span class="fs-3 fw-medium">Computers</span>
+                                            <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">87%</h6>
+                                        </div>
+                                        <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
+                                            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-primary" style="width: 100%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="hstack justify-content-between">
+                                            <span class="fs-3 fw-medium">Smartphones</span>
+                                            <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">9.2%</h6>
+                                        </div>
+                                        <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
+                                            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-secondary" style="width: 50%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="hstack justify-content-between">
+                                            <span class="fs-3 fw-medium">Tablets</span>
+                                            <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">3.1%</h6>
+                                        </div>
+                                        <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
+                                            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar bg-success" style="width: 35%"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overflow-hidden card hover-img">
+                            <div class="position-relative">
+                                <a href="javascript:void(0)">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
+                                </a>
+                                <span
+                                    class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
+                                    min Read</span>
+                                <img src="{{ asset('test/assets/images/profile/user-3.jpg') }}" alt="matdash-"
+                                    class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
+                                    width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    data-bs-title="Georgeanna Ramero">
+                            </div>
+                            <div class="p-4 card-body">
+                                <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Social</span>
+                                <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">As yen
+                                    tumbles, gadget-loving
+                                    Japan goes
+                                    for secondhand iPhones</a>
+                                <div class="gap-4 d-flex align-items-center">
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-eye text-dark fs-5"></i>9,125
+                                    </div>
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-message-2 text-dark fs-5"></i>3
+                                    </div>
+                                    <div class="d-flex align-items-center fs-2 ms-auto">
+                                        <i class="ti ti-point text-dark"></i>Mon, Dec 19
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overflow-hidden card hover-img">
+                            <div class="position-relative">
+                                <a href="javascript:void(0)">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
+                                </a>
+                                <span
+                                    class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
+                                    min Read</span>
+                                <img src="{{ asset('test/assets/images/profile/user-2.jpg') }}" alt="matdash-"
+                                    class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
+                                    width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    data-bs-title="Georgeanna Ramero">
+                            </div>
+                            <div class="p-4 card-body">
+                                <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Gadget</span>
+                                <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">Intel
+                                    loses bid to revive
+                                    antitrust case
+                                    against patent foe Fortress</a>
+                                <div class="gap-4 d-flex align-items-center">
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-eye text-dark fs-5"></i>4,150
+                                    </div>
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-message-2 text-dark fs-5"></i>38
+                                    </div>
+                                    <div class="d-flex align-items-center fs-2 ms-auto">
+                                        <i class="ti ti-point text-dark"></i>Sun, Dec 18
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overflow-hidden card hover-img">
+                            <div class="position-relative">
+                                <a href="javascript:void(0)">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
+                                </a>
+                                <span
+                                    class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
+                                    min Read</span>
+                                <img src="{{ asset('test/assets/images/profile/user-3.jpg') }}" alt="matdash-img"
+                                    class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
+                                    width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    data-bs-title="Georgeanna Ramero">
+                            </div>
+                            <div class="p-4 card-body">
+                                <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Health</span>
+                                <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">COVID
+                                    outbreak deepens as more
+                                    lockdowns
+                                    loom in China</a>
+                                <div class="gap-4 d-flex align-items-center">
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-eye text-dark fs-5"></i>9,480
+                                    </div>
+                                    <div class="gap-2 d-flex align-items-center">
+                                        <i class="ti ti-message-2 text-dark fs-5"></i>12
+                                    </div>
+                                    <div class="d-flex align-items-center fs-2 ms-auto">
+                                        <i class="ti ti-point text-dark"></i>Sat, Dec 17
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-6 py-6 text-center">
+                        <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
+                                class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>Distributed by <a
+                                href="https://themewagon.com/" target="_blank"
+                                class="pe-1 text-primary text-decoration-underline">ThemeWagon</a></p>
+                    </div>
+
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const sidebar = document.getElementById('sidebarnav');
+                            const workspace = document.querySelector('.container-fluid');
+
+                            console.log('Sidebar dan Workspace telah diinisialisasi');
+
+                            sidebar.addEventListener('click', function(event) {
+                                console.log('Sidebar telah diklik');
+
+                                if (event.target.tagName === 'A' && event.target.hasAttribute('data-file')) {
+                                    console.log('Link dengan data-file telah diklik');
+
+                                    const file = event.target.getAttribute('data-file');
+                                    console.log(`File yang akan di-load: ${file}`);
+
+                                    loadFile(file);
+                                }
+                            });
+
+                            function loadFile(file) {
+                                console.log(`Meng-load file: ${file}`);
+
+                                const url = `/resource/${file}`;
+                                console.log(`URL yang akan di-load: ${url}`);
+
+                                fetch(url)
+                                    .then(response => {
+                                        console.log('Response telah diterima');
+
+                                        return response.text();
+                                    })
+                                    .then(content => {
+                                        console.log('Content telah diterima');
+
+                                        workspace.innerHTML = content;
+                                        console.log('Content telah di-load ke workspace');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error telah terjadi:', error);
+                                    });
                             }
-                          },
-                          gridLines: {
-                            drawTicks: false,
-                            display: false
-                          }
-                        }],
-                        xAxes: [{
-                          gridLines: {
-                            zeroLineColor: "transparent"
-                          },
-                          ticks: {
-                            padding: 10,
-                            fontColor: "#9aa0ac",
-                            fontStyle: "500"
-                          }
-                        }]
-                      },
-                      legendCallback: function(chart) {
-                        var text = [];
-                        text.push('<ul class="' + chart.id + '-legend html-legend">');
-                        for (var i = 0; i < chart.data.datasets.length; i++) {
-                          text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>');
-                          if (chart.data.datasets[i].label) {
-                            text.push(chart.data.datasets[i].label);
-                          }
-                          text.push('</li>');
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                      }
-                    }
-                  });
-
-                  var myLegendContainer = document.getElementById("myChartLegend");
-                  myLegendContainer.innerHTML = statisticsChart.generateLegend();
-
-              </script>  --}}
-
-                <div class="col-md-4">
-                    <div class="card card-primary card-round">
-                        <div class="card-header">
-                            <div class="card-head-row">
-                                <div class="card-title">Daily Sales</div>
-                                <div class="card-tools">
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-label-light dropdown-toggle" type="button"
-                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            Export
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-category">March 25 - April 02</div>
-                        </div>
-                        <div class="pb-0 card-body">
-                            <div class="mt-2 mb-4">
-                                <h1>$4,578.58</h1>
-                            </div>
-                            <div class="pull-in">
-                                <canvas id="dailySalesChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card card-round">
-                        <div class="pb-0 card-body">
-                            <div class="h1 fw-bold float-end text-primary">+5%</div>
-                            <h2 class="mb-2">17</h2>
-                            <p class="text-muted">Users online</p>
-                            <div class="pull-in sparkline-fix">
-                                <div id="lineChart"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-round">
-                        <div class="card-header">
-                            <div class="card-head-row card-tools-still-right">
-                                <h4 class="card-title">Users Geolocation</h4>
-                                <div class="card-tools">
-                                    <button class="btn btn-icon btn-link btn-primary btn-xs">
-                                        <span class="fa fa-angle-down"></span>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card">
-                                        <span class="fa fa-sync-alt"></span>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-primary btn-xs">
-                                        <span class="fa fa-times"></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="card-category">
-                                Map of the distribution of users around the world
-                            </p>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="table-responsive table-hover table-sales">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/id.png" alt="indonesia" />
-                                                        </div>
-                                                    </td>
-                                                    <td>Indonesia</td>
-                                                    <td class="text-end">2.320</td>
-                                                    <td class="text-end">42.18%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/us.png" alt="united states" />
-                                                        </div>
-                                                    </td>
-                                                    <td>USA</td>
-                                                    <td class="text-end">240</td>
-                                                    <td class="text-end">4.36%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/au.png" alt="australia" />
-                                                        </div>
-                                                    </td>
-                                                    <td>Australia</td>
-                                                    <td class="text-end">119</td>
-                                                    <td class="text-end">2.16%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/ru.png" alt="russia" />
-                                                        </div>
-                                                    </td>
-                                                    <td>Russia</td>
-                                                    <td class="text-end">1.081</td>
-                                                    <td class="text-end">19.65%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/cn.png" alt="china" />
-                                                        </div>
-                                                    </td>
-                                                    <td>China</td>
-                                                    <td class="text-end">1.100</td>
-                                                    <td class="text-end">20%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="flag">
-                                                            <img src="assets/img/flags/br.png" alt="brazil" />
-                                                        </div>
-                                                    </td>
-                                                    <td>Brasil</td>
-                                                    <td class="text-end">640</td>
-                                                    <td class="text-end">11.63%</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mapcontainer">
-                                        <div id="world-map" class="w-100" style="height: 300px"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card card-round">
-                        <div class="card-body">
-                            <div class="card-head-row card-tools-still-right">
-                                <div class="card-title">New Customers</div>
-                                <div class="card-tools">
-                                    <div class="dropdown">
-                                        <button class="btn btn-icon btn-clean me-0" type="button"
-                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="py-4 card-list">
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="assets/img/jm_denis.jpg" alt="..."
-                                            class="avatar-img rounded-circle" />
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Jimmy Denis</div>
-                                        <div class="status">Graphic Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <span class="border border-white avatar-title rounded-circle">CF</span>
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Chandra Felix</div>
-                                        <div class="status">Sales Promotion</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="assets/img/talha.jpg" alt="..."
-                                            class="avatar-img rounded-circle" />
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Talha</div>
-                                        <div class="status">Front End Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <img src="assets/img/chadengle.jpg" alt="..."
-                                            class="avatar-img rounded-circle" />
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Chad</div>
-                                        <div class="status">CEO Zeleaf</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <span class="border border-white avatar-title rounded-circle bg-primary">H</span>
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Hizrian</div>
-                                        <div class="status">Web Designer</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <span class="border border-white avatar-title rounded-circle bg-secondary">F</span>
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">Farrah</div>
-                                        <div class="status">Marketing</div>
-                                    </div>
-                                    <button class="btn btn-icon btn-link op-8 me-1">
-                                        <i class="far fa-envelope"></i>
-                                    </button>
-                                    <button class="btn btn-icon btn-link btn-danger op-8">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="card card-round">
-                        <div class="card-header">
-                            <div class="card-head-row card-tools-still-right">
-                                <div class="card-title">Transaction History</div>
-                                <div class="card-tools">
-                                    <div class="dropdown">
-                                        <button class="btn btn-icon btn-clean me-0" type="button"
-                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-0 card-body">
-                            <div class="table-responsive">
-                                <!-- Projects table -->
-                                <table class="table mb-0 align-items-center">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th scope="col">Payment Number</th>
-                                            <th scope="col" class="text-end">Date & Time</th>
-                                            <th scope="col" class="text-end">Amount</th>
-                                            <th scope="col" class="text-end">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                Payment from #10231
-                                            </th>
-                                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                                            <td class="text-end">$250.00</td>
-                                            <td class="text-end">
-                                                <span class="badge badge-success">Completed</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                        });
+                    </script>
                 </div>
             </div>
         </div>
-    </div>
+        {{-- <script src="{{ asset('test/assets/libs/jquery/dist/jquery.min.js') }}"></script> --}}
+        <script src="{{ asset('test/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('test/assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('test/assets/libs/simplebar/dist/simplebar.js') }}"></script>
+        <script src="{{ asset('test/assets/js/sidebarmenu.js') }}"></script>
+        <script src="{{ asset('test/assets/js/app.min.js') }}"></script>
+        <script src="{{ asset('test/assets/js/dashboard.js') }}"></script>
+</body>
 
-    <footer class="footer">
-        <div class="container-fluid d-flex justify-content-between">
-            <nav class="pull-left">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="http://www.themekita.com">
-                            ThemeKita
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Help </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Licenses </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="copyright">
-                2024, made with <i class="fa fa-heart heart text-danger"></i> by
-                <a href="http://www.themekita.com">ThemeKita</a>
-            </div>
-            <div>
-                Distributed by
-                <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
-            </div>
-        </div>
-    </footer>
-    {{--  <!-- Custom template | don't include it in your project! -->  --}}
-    <div class="custom-template">
-        <div class="title">Settings</div>
-        <div class="custom-content">
-            <div class="switcher">
-                <div class="switch-block">
-                    <h4>Logo Header</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
-                        <br />
-                        <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
-                        <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
-                    </div>
-                </div>
-                <div class="switch-block">
-                    <h4>Navbar Header</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="changeTopBarColor" data-color="dark"></button>
-                        <button type="button" class="changeTopBarColor" data-color="blue"></button>
-                        <button type="button" class="changeTopBarColor" data-color="purple"></button>
-                        <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
-                        <button type="button" class="changeTopBarColor" data-color="green"></button>
-                        <button type="button" class="changeTopBarColor" data-color="orange"></button>
-                        <button type="button" class="changeTopBarColor" data-color="red"></button>
-                        <button type="button" class="selected changeTopBarColor" data-color="white"></button>
-                        <br />
-                        <button type="button" class="changeTopBarColor" data-color="dark2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="blue2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="purple2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="green2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="orange2"></button>
-                        <button type="button" class="changeTopBarColor" data-color="red2"></button>
-                    </div>
-                </div>
-                <div class="switch-block">
-                    <h4>Sidebar</h4>
-                    <div class="btnSwitch">
-                        <button type="button" class="changeSideBarColor" data-color="white"></button>
-                        <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
-                        <button type="button" class="changeSideBarColor" data-color="dark2"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="custom-toggle">
-            <i class="icon-settings"></i>
-        </div>
-    </div>
-    <!-- End Custom template -->
-    </div>
-@endsection
+</html>
