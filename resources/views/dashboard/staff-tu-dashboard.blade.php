@@ -66,8 +66,8 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="##" data-file="manajemen-siswa" aria-expanded="false">
                                 <span>
-                                    <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"
-                                        class="fs-6"></iconify-icon>
+                                    <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="fs-6">
+                                    </iconify-icon>
                                 </span>
                                 <span class="hide-menu">Manajemen Siswa</span>
                             </a>
@@ -75,8 +75,8 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="##" data-file="manajemen-guru" aria-expanded="false">
                                 <span>
-                                    <iconify-icon icon="solar:square-academic-cap-2-bold-duotone"
-                                        class="fs-6"></iconify-icon>
+                                    <iconify-icon icon="solar:square-academic-cap-2-bold-duotone" class="fs-6">
+                                    </iconify-icon>
                                 </span>
                                 <span class="hide-menu">Manajemen Guru & Karyawan</span>
                             </a>
@@ -127,8 +127,8 @@
                             </a>
                         </li>
                         <li class="nav-small-cap">
-                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"
-                                class="fs-6"></iconify-icon>
+                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4" class="fs-6">
+                            </iconify-icon>
                             <span class="hide-menu">AUTH</span>
                         </li>
                         <li class="sidebar-item">
@@ -142,8 +142,8 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{ url('/register') }}" aria-expanded="false">
                                 <span>
-                                    <iconify-icon icon="solar:user-plus-rounded-bold-duotone"
-                                        class="fs-6"></iconify-icon>
+                                    <iconify-icon icon="solar:user-plus-rounded-bold-duotone" class="fs-6">
+                                    </iconify-icon>
                                 </span>
                                 <span class="hide-menu">Register</span>
                             </a>
@@ -164,8 +164,50 @@
                     </div>
                 </nav>
                 <!-- End Sidebar navigation -->
-
                 <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const sidebar = document.getElementById('sidebarnav');
+                        const workspace = document.querySelector('.container-fluid');
+
+                        console.log('Sidebar dan Workspace telah diinisialisasi');
+
+                        sidebar.addEventListener('click', function(event) {
+                            console.log('Sidebar telah diklik');
+
+                            if (event.target.tagName === 'A' && event.target.hasAttribute('data-file')) {
+                                console.log('Link dengan data-file telah diklik');
+
+                                const file = event.target.getAttribute('data-file');
+                                console.log(`File yang akan di-load: ${file}`);
+
+                                loadFile(file);
+                            }
+                        });
+
+                        function loadFile(file) {
+                            console.log(`Meng-load file: ${file}`);
+
+                            const url = `/resource/${file}`;
+                            console.log(`URL yang akan di-load: ${url}`);
+
+                            fetch(url)
+                                .then(response => {
+                                    console.log('Response telah diterima');
+
+                                    return response.text();
+                                })
+                                .then(content => {
+                                    console.log('Content telah diterima');
+
+                                    workspace.innerHTML = content;
+                                    console.log('Content telah di-load ke workspace');
+                                })
+                                .catch(error => {
+                                    console.error('Error telah terjadi:', error);
+                                });
+                        }
+                    });
+
                     document.addEventListener('DOMContentLoaded', (event) => {
                         // Menambahkan ikon dari Iconify
                         document.querySelectorAll('.iconify').forEach(function(icon) {
@@ -204,14 +246,13 @@
                             <a href="#" target="_blank" class="btn btn-primary me-2"><span
                                     class="d-none d-md-block">Check Pro Version</span> <span
                                     class="d-block d-md-none">Pro</span></a>
-                            <a href="#" target="_blank" class="btn btn-success"><span
-                                    class="d-none d-md-block">Download Free </span> <span
-                                    class="d-block d-md-none">Free</span></a>
+                            <a href="#" target="_blank" class="btn btn-success"><span class="d-none d-md-block">Download
+                                    Free </span> <span class="d-block d-md-none">Free</span></a>
                             <li class="nav-item dropdown">
                                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ asset('test/assets/images/profile/user-1.jpg') }}" alt=""
-                                        width="35" height="35" class="rounded-circle">
+                                    <img src="{{ asset('test/assets/images/profile/user-1.jpg') }}" alt="" width="35"
+                                        height="35" class="rounded-circle">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
                                     aria-labelledby="drop2">
@@ -243,7 +284,7 @@
             <!--  Header End -->
             <div class="container-fluid">
                 <div class="row">
-                    {{--  TAMPILAN IKON  --}}
+                    {{-- TAMPILAN IKON --}}
                     <div class="row tampilan_ikon_dashboard">
                         <div class="row">
                             <div class="col-sm-6 col-md-3">
@@ -324,7 +365,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- trafix  absensi --}}
+                    {{-- trafix absensi --}}
                     <div class="col-lg-8">
                         <div class="card">
                             <div class="card-body">
@@ -333,19 +374,26 @@
                                     <span>
                                         <iconify-icon icon="solar:question-circle-bold" class="fs-7 d-flex text-muted"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-custom-class="tooltip-success"
-                                            data-bs-title="Traffic Overview"></iconify-icon>
+                                            data-bs-custom-class="tooltip-success" data-bs-title="Traffic Overview">
+                                        </iconify-icon>
                                     </span>
                                 </h5>
                                 <div id="traffic-overview"></div>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', (event) => {
-                                        const siswaCountPerDay = {!! json_encode($siswaCountPerDay) !!};
-                                        const guruCountPerDay = {!! json_encode($guruCountPerDay) !!};
+                                    try {
+                                        const siswaCountPerDay = {!! json_encode($siswaCountPerDay)!!};
+                                        const guruCountPerDay = {!! json_encode($guruCountPerDay)!!};
+
+                                        console.log('Data siswaCountPerDay:', siswaCountPerDay);
+                                        console.log('Data guruCountPerDay:', guruCountPerDay);
 
                                         // Pastikan nilai yang dikirim adalah integer
                                         const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
                                         const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
+
+                                        console.log('Data siswaData:', siswaData);
+                                        console.log('Data guruData:', guruData);
 
                                         // Data untuk grafik
                                         var chart = {
@@ -414,12 +462,23 @@
                                             },
                                         };
 
+                                        console.log('Data chart:', chart);
+
                                         var chartInstance = new ApexCharts(
                                             document.querySelector("#traffic-overview"),
                                             chart
                                         );
+
+                                        console.log('Chart instance:', chartInstance);
+
                                         chartInstance.render();
-                                    });
+
+                                        console.log('Chart rendered');
+                                    } catch (error) {
+                                        console.error('Error:', error);
+                                    }
+                                });
+
                                 </script>
                             </div>
                         </div>
@@ -427,8 +486,8 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="text-center card-body">
-                                <img src="{{ asset('test/assets/images/backgrounds/product-tip.png') }}"
-                                    alt="image" class="img-fluid" width="205">
+                                <img src="{{ asset('test/assets/images/backgrounds/product-tip.png') }}" alt="image"
+                                    class="img-fluid" width="205">
                                 <h4 class="mt-7">Productivity Tips!</h4>
                                 <p class="mt-2 mb-3 card-subtitle">Duis at orci justo nulla in libero id leo
                                     molestie sodales phasellus justo.</p>
@@ -468,124 +527,120 @@
                         <script src="{{ asset('tu/assets/js/plugin/datatables/datatables.min.js') }}"></script>
                         <script>
                             $(document).ready(function() {
-                                        // Debug untuk memeriksa apakah jQuery dan DataTable terdeteksi
-                                        console.log("jQuery version:", $.fn.jquery); // Output: 3.7.1
-                                        console.log("DataTable plugin exists:", typeof $.fn.DataTable === "function"); // Output: true
+                                // Debug untuk memeriksa apakah jQuery dan DataTable terdeteksi
+                                console.log("jQuery version:", $.fn.jquery); // Output: 3.7.1
+                                console.log("DataTable plugin exists:", typeof $.fn.DataTable === "function"); // Output: true
 
-                                        let table;
+                                let table;
 
-                                        // Mapping kolom untuk tiap tipe data
-                                        const columnsMap = {
-                                            students: ["Nama", "Kelas", "Jenis Kelamin", "Tanggal Masuk", "Telepon"],
-                                            teachers: ["Nama", "Mata Pelajaran", "Jenis Kelamin", "Tanggal Bergabung", "Telepon"]
-                                        };
+                                // Mapping kolom untuk tiap tipe data
+                                const columnsMap = {
+                                    students: ["Nama", "Kelas", "Jenis Kelamin", "Tanggal Masuk", "Telepon"],
+                                    teachers: ["Nama", "Mata Pelajaran", "Jenis Kelamin", "Tanggal Bergabung", "Telepon"]
+                                };
 
-                                        const fieldsMap = {
-                                            students: ["name", "class_id", "gender", "created_at", "phone"],
-                                            teachers: ["name", "subject", "gender", "created_at", "phone"]
-                                        };
+                                const fieldsMap = {
+                                    students: ["name", "class_id", "gender", "created_at", "phone"],
+                                    teachers: ["name", "subject", "gender", "created_at", "phone"]
+                                };
 
-                                        // Fungsi untuk mengubah header tabel
-                                        function updateTableHead(type) {
-                                            const headers = columnsMap[type] || [];
-                                            const tableHead = $("#table-head");
-                                            tableHead.empty(); // Hapus isi lama
-                                            headers.forEach(header => {
-                                                tableHead.append(`<th>${header}</th>`);
+                                // Fungsi untuk mengubah header tabel
+                                function updateTableHead(type) {
+                                    const headers = columnsMap[type] || [];
+                                    const tableHead = $("#table-head");
+                                    tableHead.empty(); // Hapus isi lama
+                                    headers.forEach(header => {
+                                        tableHead.append(`<th>${header}</th>`);
+                                    });
+                                }
+
+                                // Fungsi untuk memuat data ke tabel
+                                function loadData(type) {
+                                    if (table) {
+                                        table.destroy(); // Reset DataTable jika sudah ada
+                                    }
+
+                                    console.log(`Fetching data for type: ${type}`); // Debug AJAX request
+                                    $.ajax({
+                                        url: `http://127.0.0.1:8000/get-data`,
+                                        type: "GET",
+                                        data: {
+                                            type: type
+                                        },
+                                        success: function(response) {
+                                            console.log("Data received:", response);
+
+                                            const data = response || [];
+                                            const tbody = $("#multi-filter-select tbody");
+                                            tbody.empty();
+
+                                            // Isi tabel menggunakan data
+                                            data.forEach(item => {
+                                                let rowData = '<tr>';
+                                                fieldsMap[type].forEach(field => {
+                                                    // Format tanggal jika kolom adalah created_at
+                                                    let cellData = field === 'created_at' ? new Date(item[
+                                                        field]).toLocaleDateString() : item[field];
+                                                    rowData += `<td>${cellData}</td>`;
+                                                });
+                                                rowData += '</tr>';
+                                                tbody.append(rowData);
                                             });
-                                        }
 
-                                        // Fungsi untuk memuat data ke tabel
-                                        function loadData(type) {
-                                            if (table) {
-                                                table.clear().destroy(); // Reset DataTable jika sudah ada
-                                            }
+                                            // Inisialisasi ulang DataTable dengan fitur sorting dan filter suggestion
+                                            table = $("#multi-filter-select").DataTable({
+                                                pageLength: 5, // Mengatur panjang halaman menjadi 5
+                                                initComplete: function() {
+                                                    this.api()
+                                                        .columns()
+                                                        .every(function() {
+                                                            var column = this;
+                                                            var select = $(
+                                                                    '<select class="form-select"><option value="">Semua</option></select>'
+                                                                )
+                                                                .appendTo($(column
+                                                            .header())) // Tambahkan ke header kolom
+                                                                .on("change", function() {
+                                                                    var val = $.fn.dataTable.util
+                                                                        .escapeRegex($(this).val());
 
-                                            console.log(`Fetching data for type: ${type}`); // Debug AJAX request
-                                            $.ajax({
-                                                url: `{{ route('getData') }}`,
-                                                type: "GET",
-                                                data: {
-                                                    type: type
-                                                },
-                                                success: function(response) {
-                                                    console.log("Data received:", response);
-
-                                                    const data = response || [];
-                                                    const tbody = $("#multi-filter-select tbody");
-                                                    tbody.empty();
-
-                                                    // Isi tabel menggunakan data
-                                                    data.forEach(item => {
-                                                        let rowData = '<tr>';
-                                                        fieldsMap[type].forEach(field => {
-                                                            // Format tanggal jika kolom adalah created_at
-                                                            let cellData = field === 'created_at' ? new Date(item[
-                                                                field]).toLocaleDateString() : item[field];
-                                                            rowData += `<td>${cellData}</td>`;
-                                                        });
-                                                        rowData += '</tr>';
-                                                        tbody.append(rowData);
-                                                    });
-
-                                                    // Inisialisasi ulang DataTable dengan fitur sorting dan filter suggestion
-                                                    table = $("#multi-filter-select").DataTable({
-                                                        pageLength: 5, // Mengatur panjang halaman menjadi 5
-                                                        initComplete: function() {
-                                                            this.api()
-                                                                .columns()
-                                                                .every(function() {
-                                                                    var column = this;
-                                                                    var select = $(
-                                                                            '<select class="form-select"><option value="">Semua</option></select>'
-                                                                        )
-                                                                        .appendTo($(column
-                                                                            .header())) // Tambahkan ke header kolom
-                                                                        .on("change", function() {
-                                                                            var val = $.fn.dataTable.util
-                                                                                .escapeRegex($(this).val());
-
-                                                                            column
-                                                                                .search(val ? "^" + val + "$" :
-                                                                                    "", true, false)
-                                                                                .draw();
-                                                                        });
-
-                                                                    column
-                                                                        .data()
-                                                                        .unique()
-                                                                        .sort()
-                                                                        .each(function(d, j) {
-                                                                            select.append(
-                                                                                '<option value="' + d +
-                                                                                '">' + d + "</option>"
-                                                                            );
-                                                                            console.log(
-                                                                                "Column data for filtering:",
-                                                                                column.data().unique()
-                                                                                .toArray());
-
-                                                                        });
+                                                                    column.search(val ? "^" + val +
+                                                                        "$" : "", true, false)
+                                                                    .draw();
                                                                 });
-                                                        },
-                                                    });
+
+                                                            column.data()
+                                                                .unique()
+                                                                .sort()
+                                                                .each(function(d, j) {
+                                                                    select.append('<option value="' +
+                                                                        d + '">' + d + "</option>");
+                                                                    console.log(
+                                                                        "Column data for filtering:",
+                                                                        column.data().unique()
+                                                                        .toArray());
+                                                                });
+                                                        });
                                                 },
-                                                error: function(xhr, status, error) {
-                                                    console.error("Error fetching data:", xhr.responseText || error);
-                                                }
                                             });
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error("Error fetching data:", xhr.responseText || error);
                                         }
+                                    });
+                                }
 
-                                        // Inisialisasi awal untuk "students"
-                                        updateTableHead("students");
-                                        loadData("students");
+                                // Inisialisasi awal untuk "students"
+                                updateTableHead("students");
+                                loadData("students");
 
-                                        // Event listener untuk dropdown
-                                        $("#dataType").change(function() {
-                                            const selectedType = $(this).val();
-                                            updateTableHead(selectedType);
-                                            loadData(selectedType);
-                                        });
+                                // Event listener untuk dropdown
+                                $("#dataType").change(function() {
+                                    const selectedType = $(this).val();
+                                    updateTableHead(selectedType);
+                                    loadData(selectedType);
+                                });
+                            });
                         </script>
 
                     </div>
@@ -594,10 +649,12 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="gap-2 pb-3 mb-5 card-title d-flex align-items-center">Sessions by
-                                    device<span><iconify-icon icon="solar:question-circle-bold"
-                                            class="fs-7 d-flex text-muted" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-custom-class="tooltip-success"
-                                            data-bs-title="Locations"></iconify-icon></span>
+                                    device<span>
+                                        <iconify-icon icon="solar:question-circle-bold" class="fs-7 d-flex text-muted"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-custom-class="tooltip-success" data-bs-title="Locations">
+                                        </iconify-icon>
+                                    </span>
                                 </h5>
                                 <div class="row">
                                     <div class="col-4">
@@ -613,8 +670,8 @@
                                         <h4 class="mt-1 mb-0">9.2%</h4>
                                     </div>
                                     <div class="col-4">
-                                        <iconify-icon icon="solar:tablet-line-duotone"
-                                            class="fs-7 d-flex text-success"></iconify-icon>
+                                        <iconify-icon icon="solar:tablet-line-duotone" class="fs-7 d-flex text-success">
+                                        </iconify-icon>
                                         <span class="mt-2 fs-11 d-block text-nowrap">Tablets</span>
                                         <h4 class="mt-1 mb-0">3.1%</h4>
                                     </div>
@@ -662,8 +719,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}"
-                                        class="card-img-top" alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}" class="card-img-top"
+                                        alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
@@ -697,8 +754,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}"
-                                        class="card-img-top" alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}" class="card-img-top"
+                                        alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
@@ -732,8 +789,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}"
-                                        class="card-img-top" alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}" class="card-img-top"
+                                        alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
@@ -771,50 +828,7 @@
                     </div>
 
 
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const sidebar = document.getElementById('sidebarnav');
-                            const workspace = document.querySelector('.container-fluid');
 
-                            console.log('Sidebar dan Workspace telah diinisialisasi');
-
-                            sidebar.addEventListener('click', function(event) {
-                                console.log('Sidebar telah diklik');
-
-                                if (event.target.tagName === 'A' && event.target.hasAttribute('data-file')) {
-                                    console.log('Link dengan data-file telah diklik');
-
-                                    const file = event.target.getAttribute('data-file');
-                                    console.log(`File yang akan di-load: ${file}`);
-
-                                    loadFile(file);
-                                }
-                            });
-
-                            function loadFile(file) {
-                                console.log(`Meng-load file: ${file}`);
-
-                                const url = `/resource/${file}`;
-                                console.log(`URL yang akan di-load: ${url}`);
-
-                                fetch(url)
-                                    .then(response => {
-                                        console.log('Response telah diterima');
-
-                                        return response.text();
-                                    })
-                                    .then(content => {
-                                        console.log('Content telah diterima');
-
-                                        workspace.innerHTML = content;
-                                        console.log('Content telah di-load ke workspace');
-                                    })
-                                    .catch(error => {
-                                        console.error('Error telah terjadi:', error);
-                                    });
-                            }
-                        });
-                    </script>
                 </div>
             </div>
         </div>

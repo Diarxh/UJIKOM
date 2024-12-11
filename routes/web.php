@@ -28,23 +28,16 @@ Route::get('/get-data', [StaffTataUsahaController::class, 'getData'])->name('get
 Route::get('/unauthorized', function () {
     return view('unauthorized');
 });
-// Route::get('/tes', function () {
-//     return view('dashboard.staff-tu-dashboard');
-// });
 
-// TESTING
-// Route::get('/{page}', function ($page) {
-//     // Pastikan file Blade ada di folder pages
-//     if (view()->exists("pages.$page")) {
-//         return view("pages.$page");
-//     }
-//     abort(404);  // Jika file tidak ditemukan, tampilkan halaman 404
-// });
-// Route::get('spa/{file}', function ($file) {
-//     return view('pages.' . $file . '.index');
-// });
 Route::get('/resource/{file}', function ($file) {
     return view('resource.' . $file . '.index');
 });
 // dalam file routes/web.php
 Route::get('/resource/{file}', 'StaffTataUsahaController@menu');
+Route::get('/manajemen-guru', 'StaffTataUsahaController@manajemenGuru');
+Route::get('/manajemen-siswa', 'StaffTataUsahaController@manajemenSiswa');
+Route::get('/manajemen-kelas', 'StaffTataUsahaController@manajemenKelas');
+Route::get('/manajemen-ekstrakurikuler', 'StaffTataUsahaController@manajemenEkstrakurikuler');
+Route::get('/manajemen-keuangan', 'StaffTataUsahaController@manajemenKeuangan');
+Route::get('/manajemen-laporan', 'StaffTataUsahaController@manajemenLaporan');
+Route::get('/dashboard', 'StaffTataUsahaController@dashboard');

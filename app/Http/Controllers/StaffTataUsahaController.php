@@ -10,8 +10,9 @@ use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+// use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 class StaffTataUsahaController extends Controller
 {
@@ -48,13 +49,17 @@ class StaffTataUsahaController extends Controller
             ->get()
             ->mapWithKeys(function ($item) {
                 $days = [
-                    2 => 'Senin', 3 => 'Selasa', 4 => 'Rabu', 5 => 'Kamis', 6 => 'Jumat', 7 => 'Sabtu'
+                    2 => 'Senin',
+                    3 => 'Selasa',
+                    4 => 'Rabu',
+                    5 => 'Kamis',
+                    6 => 'Jumat',
+                    7 => 'Sabtu'
                 ];
-                return [$days[$item->day_of_week] => intval($item->count)];
+                return [$days[$item->day_of_week] => $item->count];
             })
-            ->toArray();  // Convert to array
+            ->toArray();
 
-        // Data Absensi Guru per Hari
         $guruCountPerDay = Attendance::selectRaw('DAYOFWEEK(date) as day_of_week, COUNT(*) as count')
             ->whereNotNull('teacher_id')
             ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
@@ -63,18 +68,28 @@ class StaffTataUsahaController extends Controller
             ->get()
             ->mapWithKeys(function ($item) {
                 $days = [
-                    2 => 'Senin', 3 => 'Selasa', 4 => 'Rabu', 5 => 'Kamis', 6 => 'Jumat', 7 => 'Sabtu'
+                    2 => 'Senin',
+                    3 => 'Selasa',
+                    4 => 'Rabu',
+                    5 => 'Kamis',
+                    6 => 'Jumat',
+                    7 => 'Sabtu'
                 ];
-                return [$days[$item->day_of_week] => intval($item->count)];
+                return [$days[$item->day_of_week] => $item->count];
             })
-            ->toArray();  // Convert to array
+            ->toArray();
 
         // Mengirim data ke view
         return view('dashboard.staff-tu-dashboard', compact(
-            'siswaCount', 'guruCount',
-            'slipGajiCount', 'absensiSiswaCount', 'absensiGuruCount',
-            'sppData', 'gajiData',
-            'siswaCountPerDay', 'guruCountPerDay'
+            'siswaCount',
+            'guruCount',
+            'slipGajiCount',
+            'absensiSiswaCount',
+            'absensiGuruCount',
+            'sppData',
+            'gajiData',
+            'siswaCountPerDay',
+            'guruCountPerDay'
         ));
     }
 
@@ -124,43 +139,62 @@ class StaffTataUsahaController extends Controller
 
     public function manajemenGuru()
     {
-        $data = Teacher::all();
-        return $data;
+        try {
+            $data = Teacher::all();
+            return view('resource.manajemen-guru.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
     public function manajemenSiswa()
     {
-        $data = Student::all();
-        return $data;
+        try {
+            $data = Student::all();
+            return view('resource.manajemen-siswa.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
     public function manajemenKelas()
     {
-        $data = SchoolClass::all();
-        return $data;
+        try {
+            $data = SchoolClass::all();
+            return view('resource.manajemen-kelas.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
     public function manajemenEkstrakurikuler()
     {
-        $data = Attendance::all();
-        return $data;
+        try {
+            $data = Attendance::all();
+            return view('resource.manajemen-ekstrakurikuler.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
     public function manajemenKeuangan()
     {
-        $data = spp::all();
-        return $data;
+        try {
+            $data = Spp::all();
+            return view('resource.manajemen-keuangan.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
     public function manajemenLaporan()
     {
-        $data = SlipGajiGuru::all();
-        return $data;
+        try {
+            $data = SlipGajiGuru::all();
+            return view('resource.manajemen-laporan.index', compact('data'));
+        } catch (\Exception $e) {
+            return view('error', ['message' => $e->getMessage()]);
+        }
     }
 
-    public function dashboard()
-    {
-        $data = Dashboard::all();
-        return $data;
-    }
 }
