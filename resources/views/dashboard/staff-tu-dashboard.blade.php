@@ -127,7 +127,8 @@
                             </a>
                         </li>
                         <li class="nav-small-cap">
-                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4" class="fs-6">
+                            <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"
+                                class="fs-6">
                             </iconify-icon>
                             <span class="hide-menu">AUTH</span>
                         </li>
@@ -246,13 +247,14 @@
                             <a href="#" target="_blank" class="btn btn-primary me-2"><span
                                     class="d-none d-md-block">Check Pro Version</span> <span
                                     class="d-block d-md-none">Pro</span></a>
-                            <a href="#" target="_blank" class="btn btn-success"><span class="d-none d-md-block">Download
+                            <a href="#" target="_blank" class="btn btn-success"><span
+                                    class="d-none d-md-block">Download
                                     Free </span> <span class="d-block d-md-none">Free</span></a>
                             <li class="nav-item dropdown">
                                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ asset('test/assets/images/profile/user-1.jpg') }}" alt="" width="35"
-                                        height="35" class="rounded-circle">
+                                    <img src="{{ asset('test/assets/images/profile/user-1.jpg') }}" alt=""
+                                        width="35" height="35" class="rounded-circle">
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
                                     aria-labelledby="drop2">
@@ -381,104 +383,103 @@
                                 <div id="traffic-overview"></div>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', (event) => {
-                                    try {
-                                        const siswaCountPerDay = {!! json_encode($siswaCountPerDay)!!};
-                                        const guruCountPerDay = {!! json_encode($guruCountPerDay)!!};
+                                        try {
+                                            const siswaCountPerDay = {!! json_encode($siswaCountPerDay) !!};
+                                            const guruCountPerDay = {!! json_encode($guruCountPerDay) !!};
 
-                                        console.log('Data siswaCountPerDay:', siswaCountPerDay);
-                                        console.log('Data guruCountPerDay:', guruCountPerDay);
+                                            console.log('Data siswaCountPerDay:', siswaCountPerDay);
+                                            console.log('Data guruCountPerDay:', guruCountPerDay);
 
-                                        // Pastikan nilai yang dikirim adalah integer
-                                        const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
-                                        const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
+                                            // Pastikan nilai yang dikirim adalah integer
+                                            const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
+                                            const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
 
-                                        console.log('Data siswaData:', siswaData);
-                                        console.log('Data guruData:', guruData);
+                                            console.log('Data siswaData:', siswaData);
+                                            console.log('Data guruData:', guruData);
 
-                                        // Data untuk grafik
-                                        var chart = {
-                                            series: [{
-                                                    name: "Siswa",
-                                                    data: siswaData,
-                                                },
-                                                {
-                                                    name: "Guru",
-                                                    data: guruData,
-                                                },
-                                            ],
-                                            chart: {
-                                                toolbar: {
-                                                    show: false,
-                                                },
-                                                type: "line",
-                                                fontFamily: "inherit",
-                                                foreColor: "#adb0bb",
-                                                height: 320,
-                                                stacked: false,
-                                            },
-                                            colors: ["#5F9EA0", "#FF69B4"],
-                                            dataLabels: {
-                                                enabled: false,
-                                            },
-                                            legend: {
-                                                show: false,
-                                            },
-                                            stroke: {
-                                                width: 2,
-                                                curve: "smooth",
-                                            },
-                                            grid: {
-                                                borderColor: "rgba(0,0,0,0.1)",
-                                                strokeDashArray: 3,
-                                                xaxis: {
-                                                    lines: {
+                                            // Data untuk grafik
+                                            var chart = {
+                                                series: [{
+                                                        name: "Siswa",
+                                                        data: siswaData,
+                                                    },
+                                                    {
+                                                        name: "Guru",
+                                                        data: guruData,
+                                                    },
+                                                ],
+                                                chart: {
+                                                    toolbar: {
                                                         show: false,
                                                     },
+                                                    type: "line",
+                                                    fontFamily: "inherit",
+                                                    foreColor: "#adb0bb",
+                                                    height: 320,
+                                                    stacked: false,
                                                 },
-                                            },
-                                            xaxis: {
-                                                axisBorder: {
+                                                colors: ["#5F9EA0", "#FF69B4"],
+                                                dataLabels: {
+                                                    enabled: false,
+                                                },
+                                                legend: {
                                                     show: false,
                                                 },
-                                                axisTicks: {
-                                                    show: false,
+                                                stroke: {
+                                                    width: 2,
+                                                    curve: "smooth",
                                                 },
-                                                categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
-                                            },
-                                            yaxis: {
-                                                tickAmount: 4,
-                                            },
-                                            markers: {
-                                                strokeColor: ["#5F9EA0", "#FF69B4"],
-                                                strokeWidth: 2,
-                                            },
-                                            tooltip: {
-                                                theme: "dark",
-                                                y: {
-                                                    formatter: function(value) {
-                                                        return Math.floor(value); // Menampilkan tanpa desimal
+                                                grid: {
+                                                    borderColor: "rgba(0,0,0,0.1)",
+                                                    strokeDashArray: 3,
+                                                    xaxis: {
+                                                        lines: {
+                                                            show: false,
+                                                        },
+                                                    },
+                                                },
+                                                xaxis: {
+                                                    axisBorder: {
+                                                        show: false,
+                                                    },
+                                                    axisTicks: {
+                                                        show: false,
+                                                    },
+                                                    categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+                                                },
+                                                yaxis: {
+                                                    tickAmount: 4,
+                                                },
+                                                markers: {
+                                                    strokeColor: ["#5F9EA0", "#FF69B4"],
+                                                    strokeWidth: 2,
+                                                },
+                                                tooltip: {
+                                                    theme: "dark",
+                                                    y: {
+                                                        formatter: function(value) {
+                                                            return Math.floor(value); // Menampilkan tanpa desimal
+                                                        }
                                                     }
-                                                }
-                                            },
-                                        };
+                                                },
+                                            };
 
-                                        console.log('Data chart:', chart);
+                                            console.log('Data chart:', chart);
 
-                                        var chartInstance = new ApexCharts(
-                                            document.querySelector("#traffic-overview"),
-                                            chart
-                                        );
+                                            var chartInstance = new ApexCharts(
+                                                document.querySelector("#traffic-overview"),
+                                                chart
+                                            );
 
-                                        console.log('Chart instance:', chartInstance);
+                                            console.log('Chart instance:', chartInstance);
 
-                                        chartInstance.render();
+                                            chartInstance.render();
 
-                                        console.log('Chart rendered');
-                                    } catch (error) {
-                                        console.error('Error:', error);
-                                    }
-                                });
-
+                                            console.log('Chart rendered');
+                                        } catch (error) {
+                                            console.error('Error:', error);
+                                        }
+                                    });
                                 </script>
                             </div>
                         </div>
@@ -486,8 +487,8 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="text-center card-body">
-                                <img src="{{ asset('test/assets/images/backgrounds/product-tip.png') }}" alt="image"
-                                    class="img-fluid" width="205">
+                                <img src="{{ asset('test/assets/images/backgrounds/product-tip.png') }}"
+                                    alt="image" class="img-fluid" width="205">
                                 <h4 class="mt-7">Productivity Tips!</h4>
                                 <p class="mt-2 mb-3 card-subtitle">Duis at orci justo nulla in libero id leo
                                     molestie sodales phasellus justo.</p>
@@ -599,14 +600,14 @@
                                                                     '<select class="form-select"><option value="">Semua</option></select>'
                                                                 )
                                                                 .appendTo($(column
-                                                            .header())) // Tambahkan ke header kolom
+                                                                    .header())) // Tambahkan ke header kolom
                                                                 .on("change", function() {
                                                                     var val = $.fn.dataTable.util
                                                                         .escapeRegex($(this).val());
 
                                                                     column.search(val ? "^" + val +
-                                                                        "$" : "", true, false)
-                                                                    .draw();
+                                                                            "$" : "", true, false)
+                                                                        .draw();
                                                                 });
 
                                                             column.data()
@@ -670,7 +671,8 @@
                                         <h4 class="mt-1 mb-0">9.2%</h4>
                                     </div>
                                     <div class="col-4">
-                                        <iconify-icon icon="solar:tablet-line-duotone" class="fs-7 d-flex text-success">
+                                        <iconify-icon icon="solar:tablet-line-duotone"
+                                            class="fs-7 d-flex text-success">
                                         </iconify-icon>
                                         <span class="mt-2 fs-11 d-block text-nowrap">Tablets</span>
                                         <h4 class="mt-1 mb-0">3.1%</h4>
@@ -719,8 +721,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}" class="card-img-top"
-                                        alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
@@ -754,8 +756,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}" class="card-img-top"
-                                        alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
@@ -789,8 +791,8 @@
                         <div class="overflow-hidden card hover-img">
                             <div class="position-relative">
                                 <a href="javascript:void(0)">
-                                    <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}" class="card-img-top"
-                                        alt="matdash-img">
+                                    <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}"
+                                        class="card-img-top" alt="matdash-img">
                                 </a>
                                 <span
                                     class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2

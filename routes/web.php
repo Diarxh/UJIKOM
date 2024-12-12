@@ -28,16 +28,12 @@ Route::get('/get-data', [StaffTataUsahaController::class, 'getData'])->name('get
 Route::get('/unauthorized', function () {
     return view('unauthorized');
 });
-
-Route::get('/resource/{file}', function ($file) {
-    return view('resource.' . $file . '.index');
-});
-// dalam file routes/web.php
-Route::get('/resource/{file}', 'StaffTataUsahaController@menu');
+// routes/web.php
+Route::get('/resource/{file}', [App\Http\Controllers\StaffTataUsahaController::class, 'menu']);
 Route::get('/manajemen-guru', 'StaffTataUsahaController@manajemenGuru');
 Route::get('/manajemen-siswa', 'StaffTataUsahaController@manajemenSiswa');
 Route::get('/manajemen-kelas', 'StaffTataUsahaController@manajemenKelas');
 Route::get('/manajemen-ekstrakurikuler', 'StaffTataUsahaController@manajemenEkstrakurikuler');
 Route::get('/manajemen-keuangan', 'StaffTataUsahaController@manajemenKeuangan');
 Route::get('/manajemen-laporan', 'StaffTataUsahaController@manajemenLaporan');
-Route::get('/dashboard', 'StaffTataUsahaController@dashboard');
+// Route::get('/dashboard', 'StaffTataUsahaController@dashboard');

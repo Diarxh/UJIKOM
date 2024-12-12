@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+
 // use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 class StaffTataUsahaController extends Controller
@@ -109,6 +110,7 @@ class StaffTataUsahaController extends Controller
     }
     // dalam file controller StaffTataUsahaController.php
 
+    // app/Http/Controllers/StaffTataUsahaController.php
     public function menu($file)
     {
         if ($file == 'manajemen-guru') {
@@ -128,9 +130,6 @@ class StaffTataUsahaController extends Controller
             return view('resource.' . $file . '.index', compact('data'));
         } elseif ($file == 'manajemen-laporan') {
             $data = $this->manajemenLaporan();
-            return view('resource.' . $file . '.index', compact('data'));
-        } elseif ($file == 'dashboard') {
-            $data = $this->dashboard();
             return view('resource.' . $file . '.index', compact('data'));
         } else {
             return view('resource.' . $file . '.index');
@@ -196,5 +195,4 @@ class StaffTataUsahaController extends Controller
             return view('error', ['message' => $e->getMessage()]);
         }
     }
-
 }
