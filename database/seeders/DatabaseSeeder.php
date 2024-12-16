@@ -20,5 +20,10 @@ class DatabaseSeeder extends Seeder
         $this->call(SlipGajiGuruTableSeeder::class);
         $this->call(SppTableSeeder::class);
         $this->call(AttendanceSeeder::class);
+        // Memanggil seeder lain jika ada
+        $this->call([
+            GradesTableSeeder::class,
+            // Panggil seeder lain di sini jika diperlukan
+        ]);
     }
 }

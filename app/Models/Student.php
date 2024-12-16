@@ -24,4 +24,9 @@ class Student extends Model
     {
         return $this->hasMany(Grade::class);
     }
+
+    public function getGenderAttribute($value)
+    {
+        return $value === 'L' ? 'Laki-laki' : ($value === 'P' ? 'Perempuan' : 'N/A');
+    }
 }

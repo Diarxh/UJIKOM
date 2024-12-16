@@ -114,23 +114,17 @@ class StaffTataUsahaController extends Controller
     public function menu($file)
     {
         if ($file == 'manajemen-guru') {
-            $data = $this->manajemenGuru();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenGuru();
         } elseif ($file == 'manajemen-siswa') {
-            $data = $this->manajemenSiswa();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenSiswa();
         } elseif ($file == 'manajemen-kelas') {
-            $data = $this->manajemenKelas();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenKelas();
         } elseif ($file == 'manajemen-ekstrakurikuler') {
-            $data = $this->manajemenEkstrakurikuler();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenEkstrakurikuler();
         } elseif ($file == 'manajemen-keuangan') {
-            $data = $this->manajemenKeuangan();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenKeuangan();
         } elseif ($file == 'manajemen-laporan') {
-            $data = $this->manajemenLaporan();
-            return view('resource.' . $file . '.index', compact('data'));
+            return $this->manajemenLaporan();
         } else {
             return view('resource.' . $file . '.index');
         }
@@ -139,21 +133,161 @@ class StaffTataUsahaController extends Controller
     public function manajemenGuru()
     {
         try {
-            $data = Teacher::all();
-            return view('resource.manajemen-guru.index', compact('data'));
+            // Ambil data guru
+            $students = Student::with(['class', 'grades'])->get();
+
+            // Hitung rata-rata nilai untuk setiap siswa
+            $ranking = $students->map(function ($student) {
+                $averageGrade = $student->grades->avg('grade');
+                return [
+                    'name' => $student->name,
+                    'class' => $student->class->name ?? 'N/A',
+                    'average_grade' => $averageGrade,
+                ];
+            })->sortByDesc('average_grade')->values()->take(5);
+
+            // Ambil data slip gaji guru
+            $slipGajiGuru = SlipGajiGuru::with('guru')->get();  // Mengambil data slip gaji beserta data guru
+
+            // Menghitung statistik lainnya
+            $jumlahSiswa = Student::count();
+            $jumlahGuru = Teacher::count();
+            $jumlahKelas = SchoolClass::count();
+            $jumlahFakultas = 3;  // default untuk kasus ini
+
+            // Kelas yang ada untuk ditampilkan
+            $schoolClasses = SchoolClass::all();
+
+            // Mengembalikan tampilan dengan data siswa, ranking, dan slip gaji
+            return view('resource.manajemen-guru.index', compact('students', 'schoolClasses', 'ranking', 'jumlahSiswa', 'jumlahGuru', 'jumlahKelas', 'jumlahFakultas', 'slipGajiGuru'));
         } catch (\Exception $e) {
-            return view('error', ['message' => $e->getMessage()]);
+            // Log kesalahan
+            \Log::error('Error in manajemenGuru: ' . $e->getMessage());
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
+
+    public function getSlipGaji()
+    {
+        $slipGajiGuru = SlipGajiGuru::with('guru')->get();  // Ambil data slip gaji beserta guru
+
+        return response()->json($slipGajiGuru);
+    }
+
+    public function getUnpaidSlipGaji()
+    {
+        // Ambil semua ID guru yang sudah terbayar
+        $paidGuruIds = SlipGajiGuru::where('status_pembayaran', 'Dibayar')->pluck('guru_id');
+
+        // Ambil data guru yang belum terbayar
+        $unpaidGurus = Teacher::whereNotIn('id', $paidGuruIds)->get();
+
+        // Mengembalikan data dalam format JSON
+        return response()->json($unpaidGurus);
+    }
+
+    // SISWA
+    // Controller
 
     public function manajemenSiswa()
     {
         try {
-            $data = Student::all();
-            return view('resource.manajemen-siswa.index', compact('data'));
+            // Ambil siswa beserta kelas dan nilai mereka
+            $students = Student::with(['class', 'grades'])->get();
+
+            // Hitung rata-rata nilai untuk setiap siswa
+            $ranking = $students->map(function ($student) {
+                $averageGrade = $student->grades->avg('grade');
+                return [
+                    'name' => $student->name,
+                    'class' => $student->class->name ?? 'N/A',
+                    'average_grade' => $averageGrade,
+                ];
+            })->sortByDesc('average_grade')->values()->take(5);
+
+            // Ambil data yang diperlukan untuk card statistik
+            $jumlahSiswa = Student::count();
+            $jumlahGuru = Teacher::count();
+            $jumlahKelas = SchoolClass::count();
+            // Asumsi Anda memiliki model Faculty atau sejenisnya
+            $jumlahFakultas = 3;  // default untuk kasus ini
+
+            // Kelas yang ada untuk ditampilkan
+            $schoolClasses = SchoolClass::all();
+
+            // Mengembalikan tampilan dengan data siswa dan ranking
+            return view('resource.manajemen-siswa.index', compact('students', 'schoolClasses', 'ranking', 'jumlahSiswa', 'jumlahGuru', 'jumlahKelas', 'jumlahFakultas'));
         } catch (\Exception $e) {
-            return view('error', ['message' => $e->getMessage()]);
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function storeSiswa(Request $request)
+    {
+        try {
+            $student = new Student();
+            $student->name = $request->input('name');
+            $student->dob = $request->input('dob');
+            $student->class_id = $request->input('class_id');
+            $student->gender = $request->input('gender');
+            $student->address = $request->input('address');
+            $student->phone = $request->input('phone');
+            $student->email = $request->input('email');
+            $student->save();
+            return response()->json(['message' => 'Data siswa berhasil ditambahkan']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateSiswa(Request $request, $id)
+    {
+        try {
+            $student = Student::find($id);
+            $student->name = $request->input('name');
+            $student->dob = $request->input('dob');
+            $student->class_id = $request->input('class_id');
+            $student->gender = $request->input('gender');
+            $student->address = $request->input('address');
+            $student->phone = $request->input('phone');
+            $student->email = $request->input('email');
+            $student->save();
+            return response()->json(data: ['message' => 'Data siswa berhasil diupdate']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteSiswa($id)
+    {
+        $siswa = Student::find($id);
+        if ($siswa) {
+            $siswa->delete();
+            return response()->json(['message' => 'Siswa berhasil dihapus']);
+        } else {
+            return response()->json(['error' => 'Siswa tidak ditemukan'], 404);
+        }
+    }
+
+    public function getSiswaAll()
+    {
+        return Student::with('class')->get();
+    }
+
+    public function getSiswa($id)
+    {
+        try {
+            $student = Student::findOrFail($id);  // Menggunakan findOrFail untuk menangani jika siswa tidak ditemukan
+            return response()->json($student);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
+        }
+    }
+
+    public function showSalaryList()
+    {
+        $slipGaji = SlipGajiGuru::with('guru')->get();  // Mengambil semua slip gaji beserta informasi guru
+        return view('resource.manajemen-gaji.index', compact('slipGaji'));  // Ganti dengan nama view yang sesuai
     }
 
     public function manajemenKelas()

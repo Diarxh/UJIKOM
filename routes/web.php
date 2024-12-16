@@ -30,8 +30,20 @@ Route::get('/unauthorized', function () {
 });
 // routes/web.php
 Route::get('/resource/{file}', [App\Http\Controllers\StaffTataUsahaController::class, 'menu']);
-Route::get('/manajemen-guru', 'StaffTataUsahaController@manajemenGuru');
-Route::get('/manajemen-siswa', 'StaffTataUsahaController@manajemenSiswa');
+Route::get('/manajemen-guru', [App\Http\Controllers\StaffTataUsahaController::class, 'manajemenGuru']);
+Route::get('/api/slip-gaji', [StaffTataUsahaController::class, 'getSlipGaji'])->name('api.slip-gaji');
+Route::get('/api/slip-gaji/unpaid', [StaffTataUsahaController::class, 'getUnpaidSlipGaji'])->name('api.slip-gaji.unpaid');
+
+// SISWA
+// Route
+Route::get('/manajemen-siswa', [App\Http\Controllers\StaffTataUsahaController::class, 'manajemenSiswa']);
+Route::post('/siswa/tambah', [App\Http\Controllers\StaffTataUsahaController::class, 'storeSiswa']);
+Route::put('/siswa/update/{id}', [App\Http\Controllers\StaffTataUsahaController::class, 'updateSiswa']);
+Route::get('/siswa/{id}', [App\Http\Controllers\StaffTataUsahaController::class, 'getSiswa']);
+Route::delete('/siswa/delete/{id}', [StaffTataUsahaController::class, 'deleteSiswa']);
+Route::get('/siswa', [StaffTataUsahaController::class, 'getSiswaAll']);
+
+// ENDSISWA
 Route::get('/manajemen-kelas', 'StaffTataUsahaController@manajemenKelas');
 Route::get('/manajemen-ekstrakurikuler', 'StaffTataUsahaController@manajemenEkstrakurikuler');
 Route::get('/manajemen-keuangan', 'StaffTataUsahaController@manajemenKeuangan');

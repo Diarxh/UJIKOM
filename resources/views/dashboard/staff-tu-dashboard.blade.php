@@ -18,6 +18,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     {{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> --}}
+    <!-- Core JS Files -->
+    <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('tu/assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('tu/assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('tu/assets/js/plugin/datatables/datatables.min.js') }}"></script>
+    <!-- Bootstrap Notify -->
+    <script src="{{ asset('tu/assets/js/bootstrap-notify.js') }}"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/3.1.3/bootstrap-notify.min.css">
 
 
     {{-- TEST --}}
@@ -113,7 +122,8 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="##" data-file="manajemen-laporan" aria-expanded="false">
                                 <span>
-                                    <iconify-icon icon="solar:document-text-bold-duotone" class="fs-6"></iconify-icon>
+                                    <iconify-icon icon="solar:document-text-bold-duotone"
+                                        class="fs-6"></iconify-icon>
                                 </span>
                                 <span class="hide-menu">Laporan</span>
                             </a>
@@ -170,45 +180,388 @@
                         const sidebar = document.getElementById('sidebarnav');
                         const workspace = document.querySelector('.container-fluid');
 
-                        console.log('Sidebar dan Workspace telah diinisialisasi');
-
                         sidebar.addEventListener('click', function(event) {
-                            console.log('Sidebar telah diklik');
-
                             if (event.target.tagName === 'A' && event.target.hasAttribute('data-file')) {
-                                console.log('Link dengan data-file telah diklik');
-
                                 const file = event.target.getAttribute('data-file');
-                                console.log(`File yang akan di-load: ${file}`);
-
-                                loadFile(file);
+                                loadFile(file); // Memanggil fungsi loadFile untuk mengambil file
                             }
                         });
 
                         function loadFile(file) {
-                            console.log(`Meng-load file: ${file}`);
-
                             const url = `/resource/${file}`;
-                            console.log(`URL yang akan di-load: ${url}`);
-
                             fetch(url)
                                 .then(response => {
-                                    console.log('Response telah diterima');
-
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok ' + response.statusText);
+                                    }
                                     return response.text();
                                 })
                                 .then(content => {
-                                    console.log('Content telah diterima');
-
-                                    workspace.innerHTML = content;
-                                    console.log('Content telah di-load ke workspace');
+                                    workspace.innerHTML = content; // Menampilkan konten ke workspace
+                                    console.log(`File ${file} berhasil dimuat ke workspace.`);
+                                    initializeComponent(file); // Panggil fungsi inisialisasi untuk komponen yang sesuai
                                 })
                                 .catch(error => {
-                                    console.error('Error telah terjadi:', error);
+                                    console.error('Error occurred while loading file:', error);
+                                    $.notify({
+                                        icon: '<span class="iconify" data-icon="mdi:alert" style="color: red;"></span>',
+                                        title: "Error!",
+                                        message: "Gagal memuat data."
+                                    }, {
+                                        type: "danger",
+                                        delay: 5000,
+                                        timer: 1000,
+                                        placement: {
+                                            from: "top",
+                                            align: "right"
+                                        }
+                                    });
                                 });
                         }
-                    });
 
+                        function initializeComponent(file) {
+                            if (file === "manajemen-siswa") {
+                                initializeStudentManagement(); // Panggil fungsi untuk manajemen siswa
+                            } else if (file === "manajemen-guru") {
+                                initializeTeacherManagement(); // Panggil fungsi untuk manajemen guru
+                            } else if (file === "manajemen-kelas") {
+                                initializeClassManagement(); // Panggil fungsi untuk manajemen kelas
+                            }
+                            // Tambahkan lebih banyak kondisi untuk menu lainnya
+                        }
+
+
+
+                        function initializeTeacherManagement() {
+                            console.log('Initializing Teacher Management');
+                            var table = $("#add-row-teacher").DataTable({
+                                pageLength: 5,
+                                ajax: {
+                                    url: "/guru", // URL untuk mengambil data guru
+                                    dataSrc: '' // Menggunakan data langsung dari array
+                                },
+                                columns: [{
+                                        data: 'name' // Kolom nama guru
+                                    },
+                                    {
+                                        data: 'gender' // Kolom jenis kelamin
+                                    },
+                                    {
+                                        data: null,
+                                        render: function(data, type, row) {
+                                            return '<button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editRowModalTeacher" data-id="' +
+                                                row.id + '" data-name="' + row.name +
+                                                '"><i class="fa fa-edit"></i></button>' +
+                                                '<button type="button" class="btn btn-link btn-danger" data-id="' +
+                                                row.id + '"><i class="fa fa-times"></i></button>';
+                                        }
+                                    }
+                                ]
+                            });
+                            console.log('Teacher table initialized successfully.');
+                        }
+
+                        function initializeStudentManagement() {
+                            console.log("Document ready");
+                            var table = $("#add-row").DataTable({
+                                pageLength: 5,
+                                ajax: {
+                                    url: "/siswa", // URL untuk mengambil data siswa
+                                    dataSrc: '' // Menggunakan data langsung dari array
+                                },
+                                columns: [{
+                                        data: 'name'
+                                    }, // Kolom nama siswa
+                                    {
+                                        data: 'class', // Mengambil relasi class
+                                        render: function(data, type, row) {
+                                            return data ? data.name :
+                                                'N/A'; // Menampilkan nama kelas atau 'N/A' jika tidak ada
+                                        }
+                                    },
+                                    {
+                                        data: 'gender'
+                                    }, // Kolom jenis kelamin
+                                    {
+                                        data: null,
+                                        render: function(data, type, row) {
+                                            return '<button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editRowModal" data-id="' +
+                                                row.id + '" data-name="' + row.name + '" data-class-id="' + row
+                                                .class_id + '" data-gender="' + row.gender +
+                                                '"><i class="fa fa-edit"></i></button>' +
+                                                '<button type="button" class="btn btn-link btn-danger" data-id="' +
+                                                row.id + '"><i class="fa fa-times"></i></button>';
+                                        }
+                                    }
+                                ]
+                            });
+                            $("#addRowButton").click(function() {
+                                var name = $("#addName").val().trim(); // Mengambil nilai dan menghapus spasi
+                                var dob = $("#addDob").val();
+                                var classId = $("#addClass").val(); // Mengambil nilai dari dropdown
+                                var gender = $("#addGender").val(); // Mengambil nilai dari dropdown
+                                var address = $("#addAddress").val();
+                                var phone = $("#addPhone").val();
+                                var email = $("#addEmail").val();
+
+                                // Validasi input
+                                if (!name || !dob || !classId || !gender || !address || !phone || !email) {
+                                    alert("Semua field harus diisi!"); // Menampilkan pesan kesalahan
+                                    return; // Menghentikan eksekusi jika ada field yang kosong
+                                }
+
+                                console.log("Data siswa: ", name, dob, classId, gender, address, phone, email);
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/siswa/tambah",
+                                    data: {
+                                        name: name,
+                                        dob: dob,
+                                        class_id: classId,
+                                        gender: gender,
+                                        address: address,
+                                        phone: phone,
+                                        email: email,
+                                    },
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function(data) {
+                                        console.log("Data siswa berhasil ditambahkan: ", data);
+                                        $("#addRowModal").modal("hide");
+                                        table.ajax.reload();
+                                        $("#addStudentForm")[0].reset();
+
+                                        // Notifikasi sukses
+                                        $.notify({
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Berhasil!",
+                                            message: "Data siswa berhasil ditambahkan."
+                                        }, {
+                                            type: "success",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log("Error menambahkan siswa: ", xhr.responseText);
+
+                                        // Notifikasi gagal
+                                        $.notify({
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Gagal!",
+                                            message: "Terjadi kesalahan saat menambahkan siswa."
+                                        }, {
+                                            type: "danger",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    }
+                                });
+
+                            });
+
+
+                            // Event untuk memuatkan data siswa ke dalam modal edit
+                            $("#add-row").on("click", ".btn-link.btn-primary", function() {
+                                var id = $(this).data("id");
+                                console.log("ID siswa: ", id);
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/siswa/" + id,
+                                    success: function(data) {
+                                        console.log("Data siswa: ", data);
+                                        $("#editName").val(data.name);
+                                        $("#editDob").val(data.dob);
+                                        $("#editClass").val(data.class_id); // Set kelas dari data siswa
+                                        $("#editGender").val(data.gender);
+                                        $("#editAddress").val(data.address);
+                                        $("#editPhone").val(data.phone);
+                                        $("#editEmail").val(data.email);
+                                        $("#editRowButton").data("id", id);
+                                        $("#editRowModal").modal("show");
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log("Error mengambil data siswa: ", xhr.responseText);
+                                    }
+                                });
+                            });
+
+                            // Fungsi untuk mengupdate siswa
+                            $("#editRowButton").click(function() {
+                                var id = $(this).data("id"); // Mengambil ID dari tombol edit
+                                var name = $("#editName").val();
+                                var dob = $("#editDob").val();
+                                var classId = $("#editClass").val(); // Mengambil ID kelas dari dropdown
+                                var gender = $("#editGender").val();
+                                var address = $("#editAddress").val();
+                                var phone = $("#editPhone").val();
+                                var email = $("#editEmail").val();
+
+                                console.log("Data siswa: ", id, name, dob, classId, gender, address, phone, email);
+                                $.ajax({
+                                    type: "PUT",
+                                    url: "/siswa/update/" + id,
+                                    data: {
+                                        name: name,
+                                        dob: dob,
+                                        class_id: classId, // Mengirim ID kelas yang dipilih
+                                        gender: gender,
+                                        address: address,
+                                        phone: phone,
+                                        email: email,
+                                    },
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function(data) {
+                                        console.log("Data siswa berhasil diupdate: ", data);
+                                        table.ajax.reload();
+                                        $("#editRowModal").modal("hide");
+
+                                        // Notifikasi sukses
+                                        $.notify({
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Berhasil!",
+                                            message: "Data siswa berhasil diupdate."
+                                        }, {
+                                            type: "success",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log("Error mengupdate siswa: ", xhr.responseText);
+
+                                        // Notifikasi gagal
+                                        $.notify({
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Gagal!",
+                                            message: "Terjadi kesalahan saat mengupdate siswa."
+                                        }, {
+                                            type: "danger",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    }
+                                });
+
+                            });
+
+
+
+                            // Event click pada button hapus di tabel
+                            $("#add-row").on("click", ".btn-link.btn-danger", function() {
+                                var id = $(this).data("id");
+                                console.log("ID siswa untuk dihapus: ", id);
+
+                                // Menyimpan ID siswa ke dalam modal
+                                $("#deleteRowButtonConfirm").data("id", id);
+
+                                // Membuka modal konfirmasi
+                                $("#deleteRowModal").modal("show");
+                            });
+
+                            // Event untuk button konfirmasi hapus di modal
+                            $("#deleteRowButtonConfirm").click(function() {
+                                var id = $(this).data("id");
+                                console.log("ID siswa yang akan dihapus: ", id);
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: "/siswa/delete/" + id,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function(data) {
+                                        console.log(data);
+                                        table.ajax.reload();
+                                        $("#deleteRowModal").modal("hide");
+
+                                        // Notifikasi sukses
+                                        $.notify({
+                                            icon: '<span class="line-md:circle-filled-to-confirm-circle-filled-transition" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Dihapus!",
+                                            message: "Data siswa berhasil dihapus."
+                                        }, {
+                                            type: "success",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log(xhr.responseText);
+
+                                        // Notifikasi gagal
+                                        $.notify({
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
+                                            // Ganti dengan ikon yang sesuai
+                                            title: "Gagal!",
+                                            message: "Terjadi kesalahan saat menghapus siswa."
+                                        }, {
+                                            type: "danger",
+                                            delay: 5000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            }
+                                        });
+                                    }
+                                });
+                            });
+
+                            // Event untuk memuatkan data siswa ke dalam modal edit
+                            $("#add-row").on("click", ".btn-link.btn-primary", function() {
+                                var id = $(this).data("id"); // Mengambil ID dari data-id pada tombol edit
+                                console.log("ID siswa: ", id);
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/siswa/" + id,
+                                    success: function(data) {
+                                        console.log("Data siswa: ", data);
+                                        $("#editName").val(data.name);
+                                        $("#editDob").val(data.dob);
+                                        $("#editClass").val(data.class_id);
+                                        $("#editGender").val(data.gender);
+                                        $("#editAddress").val(data.address);
+                                        $("#editPhone").val(data.phone);
+                                        $("#editEmail").val(data.email);
+                                        $("#editRowButton").data("id", id); // Simpan ID pada tombol simpan
+                                        $("#editRowModal").modal("show"); // Tampilkan modal edit
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log("Error mengambil data siswa: ", xhr.responseText);
+                                    }
+                                });
+                            });
+                        }
+                        // Implementasi fungsi lainnya untuk manajemen guru, kelas, dsb.
+                    });
                     document.addEventListener('DOMContentLoaded', (event) => {
                         // Menambahkan ikon dari Iconify
                         document.querySelectorAll('.iconify').forEach(function(icon) {
@@ -368,7 +721,7 @@
                         </div>
                     </div>
                     {{-- trafix absensi --}}
-                    <div class="col-lg-8">
+                    <div class="col-lg-8 tampilan_trafik_absensi">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="gap-2 mb-4 card-title d-flex align-items-center">
@@ -497,7 +850,7 @@
                         </div>
                     </div>
                     {{-- table siswa dan guru --}}
-                    <div class="col-md-12">
+                    <div class="col-md-12 table_data_guru">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Multi Filter Select</h4>
@@ -521,11 +874,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Core JS Files -->
-                        <script src="{{ asset('tu/assets/js/core/jquery-3.7.1.min.js') }}"></script>
-                        <script src="{{ asset('tu/assets/js/core/popper.min.js') }}"></script>
-                        <script src="{{ asset('tu/assets/js/core/bootstrap.min.js') }}"></script>
-                        <script src="{{ asset('tu/assets/js/plugin/datatables/datatables.min.js') }}"></script>
+
                         <script>
                             $(document).ready(function() {
                                 // Debug untuk memeriksa apakah jQuery dan DataTable terdeteksi
