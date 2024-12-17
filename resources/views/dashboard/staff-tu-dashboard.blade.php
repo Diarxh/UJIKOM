@@ -188,7 +188,7 @@
                         });
 
                         function loadFile(file) {
-                            const url = `/resource/${file}`;
+                            const url = `/spa/${file}`;
                             fetch(url)
                                 .then(response => {
                                     if (!response.ok) {

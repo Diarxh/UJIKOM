@@ -29,7 +29,7 @@ Route::get('/unauthorized', function () {
     return view('unauthorized');
 });
 // routes/web.php
-Route::get('/resource/{file}', [App\Http\Controllers\StaffTataUsahaController::class, 'menu']);
+Route::get('/spa/{file}', [App\Http\Controllers\StaffTataUsahaController::class, 'menu']);
 Route::get('/manajemen-guru', [App\Http\Controllers\StaffTataUsahaController::class, 'manajemenGuru']);
 Route::get('/api/slip-gaji', [StaffTataUsahaController::class, 'getSlipGaji'])->name('api.slip-gaji');
 Route::get('/api/slip-gaji/unpaid', [StaffTataUsahaController::class, 'getUnpaidSlipGaji'])->name('api.slip-gaji.unpaid');
