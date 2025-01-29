@@ -26,7 +26,7 @@
                         class='bx bxs-lock-alt'></i>
                 </div>
                 <div class="forgot-link">
-                    <a href="#">Forgot Password?</a>
+                    <a href="#">Lupa Kata Sandi?</a>
                 </div>
                 <button type="submit" class="btn">Login</button>
                 <p>or login with social platforms</p>
@@ -42,7 +42,7 @@
         <div class="form-box register">
             <form id="register-form" method="POST" action="{{ route('register') }}">
                 @csrf
-                <h1>Registration</h1>
+                <h1>Daftar Akun</h1>
                 <div class="input-box">
                     <input type="text" name="name" placeholder="Username" required>
                     <i class='bx bxs-user'></i>
@@ -59,21 +59,21 @@
                     <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
                     <i class='bx bxs-lock-alt'></i>
                 </div>
-                <button type="submit" class="btn">Register</button>
+                <button type="submit" class="btn">Daftar</button>
             </form>
 
         </div>
 
         <div class="toggle-box">
             <div class="toggle-panel toggle-left">
-                <h1>Hello, Welcome!</h1>
-                <p>Don't have an account?</p>
-                <button class="btn register-btn">Register</button>
+                <h1>SIMPAI!</h1>
+                <p>Belum Memiliki Akun?</p>
+                <button class="btn register-btn">Daftar</button>
             </div>
 
             <div class="toggle-panel toggle-right">
-                <h1>Welcome Back!</h1>
-                <p>Already have an account?</p>
+                <h1>SIMPAI!</h1>
+                <p>Sudah Memiliki Akun?</p>
                 <button class="btn login-btn">Login</button>
             </div>
         </div>

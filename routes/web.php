@@ -30,7 +30,15 @@ Route::get('/unauthorized', function () {
 });
 // routes/web.php
 Route::get('/spa/{file}', [App\Http\Controllers\StaffTataUsahaController::class, 'menu']);
+// GURU ROUTE
 Route::get('/manajemen-guru', [App\Http\Controllers\StaffTataUsahaController::class, 'manajemenGuru']);
+Route::post('/guru/tambah', [App\Http\Controllers\StaffTataUsahaController::class, 'storeGuru']);
+Route::put('/guru/update/{id}', [App\Http\Controllers\StaffTataUsahaController::class, 'updateGuru']);
+Route::get('/guru/{id}', [App\Http\Controllers\StaffTataUsahaController::class, 'getGuru']);
+Route::delete('/guru/delete/{id}', [App\Http\Controllers\StaffTataUsahaController::class, 'deleteGuru']);
+Route::get('/guru', [StaffTataUsahaController::class, 'getGuruAll']);
+
+// API ROUTE
 Route::get('/api/slip-gaji', [StaffTataUsahaController::class, 'getSlipGaji'])->name('api.slip-gaji');
 Route::get('/api/slip-gaji/unpaid', [StaffTataUsahaController::class, 'getUnpaidSlipGaji'])->name('api.slip-gaji.unpaid');
 

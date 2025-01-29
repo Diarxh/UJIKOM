@@ -213,6 +213,40 @@ body {
 
 
 /* TESTTT  */
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.loader-content {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 10px solid #3498db;
+    border-top: 10px solid #ffffff;
+    animation: spin 1s linear infinite;
+}
+
+.loader-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3498db;
+    margin-top: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 input[type="date"] {
     cursor: pointer;
     background-color: #f8f9fa;
@@ -19231,12 +19265,12 @@ fieldset:disabled .btn {
 .sidebar-nav .sidebar-list .sidebar-list-item {
     padding: 8px 0;
 }
-
+/* 
 .sidebar-nav ul.sidebar-item.sidebar-link:active {
     background-color: #2952ff;
     color: #fff;
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
+} */
 
 .collapse.in {
     display: block;

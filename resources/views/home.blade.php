@@ -8,16 +8,41 @@
                 <div class="col-lg-6">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
                         <h1 class="mb-4">
-                            Selamat Datang di <br>
-                            Manajemen Sekolah <br>
-                            <span class="accent-text">Kami</span>
+                            {{-- <span class="accent-text">SIMPAI</span> <br> --}}
+                            {{-- <span class="simpan-saya">SIMPAI</span> --}}
+                            <span class="simpan-saya-grad">SIMPAI</span>
+
+                            <small class="text-muted custom-small">(Sistem Informasi dan Manajemen Pelita Al Ikshan)</small>
+
                         </h1>
+                        <style>
+                            .simpan-saya {
+                                background: linear-gradient(to right, #56b3fa, #34c759);
+                                background-clip: text;
+                                text-fill-color: transparent;
+                            }
 
+                            .simpan-saya-grad {
+                                background: linear-gradient(to right, #56b3fa, #34c759);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                            }
+
+                            .simpan-saya-ungu {
+                                background: linear-gradient(to right, #7a288a, #34c759);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                            }
+
+                            .custom-small {
+                                font-size: 2.5rem;
+                                /* Atur ukuran sesuai kebutuhan */
+                            }
+                        </style>
                         <p class="mb-4 mb-md-5">
-                            Kelola semua aspek sekolah Anda dengan mudah dan efisien. Sistem kami dirancang untuk membantu
-                            Anda mengelola siswa, guru, mata pelajaran, dan banyak lagi dengan satu platform.
+                            Memudahkan pengelolaan data siswa, guru, dan jadwal pelajaran. Aplikasi ini meningkatkan
+                            komunikasi antara sekolah, siswa, dan orang tua dengan antarmuka yang ramah pengguna.
                         </p>
-
                         <div class="hero-buttons">
                             <a href="#features" class="mx-1 btn btn-primary me-0 me-sm-2">Jelajahi Fitur</a>
                             <a href="#contact" class="mt-2 btn btn-link mt-sm-0">
@@ -26,6 +51,7 @@
                             </a>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="col-lg-6">
@@ -158,9 +184,9 @@
                 <div class="col-xl-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="image-wrapper">
                         <div class="images position-relative" data-aos="zoom-out" data-aos-delay="400">
-                            <img src="assets/img/about-5.webp" alt="Manajemen Sekolah"
+                            <img src="assets/img/belajar.png" alt="Manajemen Sekolah"
                                 class="img-fluid main-image rounded-4">
-                            <img src="assets/img/about-2.webp" alt="Pengelolaan Data"
+                            <img src="assets/img/about2.png" alt="Pengelolaan Data"
                                 class="img-fluid small-image rounded-4">
                         </div>
                         <div class="experience-badge floating">
@@ -231,7 +257,7 @@
                             </ul>
                         </div>
                         <div class="order-1 text-center col-lg-6 order-lg-2">
-                            <img src="assets/img/siswa.jpg" alt="Manajemen Siswa" class="img-fluid">
+                            <img src="assets/img/2.png" alt="Manajemen Siswa" class="img-fluid">
                             <!-- Ganti dengan gambar yang sesuai -->
                         </div>
                     </div>
@@ -255,7 +281,7 @@
                             </ul>
                         </div>
                         <div class="order-1 text-center col-lg-6 order-lg-2">
-                            <img src="assets/img/guru.jpg" alt="Manajemen Guru" class="img-fluid">
+                            <img src="assets/img/2.png" alt="Manajemen Guru" class="img-fluid">
                             <!-- Ganti dengan gambar yang sesuai -->
                         </div>
                     </div>
@@ -379,7 +405,8 @@
 
                 <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
                     <div class="text-center phone-mockup" style="width: 100%; height=100vh">
-                        <img src="assets/img/manajemen-sekolah-screen.jpg" alt="Phone Mockup" class="img-fluid" style="width: 100%">
+                        <img src="assets/img/1.png" alt="Phone Mockup" class="img-fluid"
+                            style="max-width: 100%; max-height: 100%; width: auto; height: auto;">
                         <!-- Ganti dengan gambar yang sesuai -->
                     </div>
                 </div><!-- End Phone Mockup -->
@@ -428,7 +455,7 @@
         </div>
     </section><!-- /Features 2 Section -->
     <!-- Call To Action Section -->
-    <section id="call-to-action" class="call-to-action section">
+    {{-- <section id="call-to-action" class="call-to-action section">
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -453,7 +480,7 @@
 
         </div>
 
-    </section><!-- /Call To Action Section -->
+    </section><!-- /Call To Action Section --> --}}
     <!-- Clients Section (dipertahankan, hanya ganti gambar jika perlu) -->
     <section id="clients" class="clients section">
         <!-- ... (isi bagian ini sama, hanya ganti gambar jika diperlukan) ... -->

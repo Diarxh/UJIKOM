@@ -80,6 +80,51 @@ class StaffTataUsahaController extends Controller
             })
             ->toArray();
 
+        $teachers = Teacher::with('classes')->get();
+        // Hitung persentase untuk setiap guru pada pelajaran masing-masing
+        $subjects = Teacher::select('subject')->get();
+
+        $subjectCounts = [];
+
+        foreach ($subjects as $subject) {
+            $subjectsList = explode(',', $subject->subject);
+            foreach ($subjectsList as $sub) {
+                if (isset($subjectCounts[$sub])) {
+                    $subjectCounts[$sub]++;
+                } else {
+                    $subjectCounts[$sub] = 1;
+                }
+            }
+        }
+        arsort($subjectCounts);
+        // $subjectCounts = [];
+        $guruCounts = [];
+
+        foreach ($subjectCounts as $subject => $count) {
+            $guruCounts[$subject] = Teacher::where('subject', $subject)->count();
+        }
+
+        // Menghitung statistik lainnya
+        $jumlahSiswa = Student::count();
+        $jumlahGuru = Teacher::count();
+        $jumlahKelas = SchoolClass::count();
+        $jumlahFakultas = 3;  // default untuk kasus ini
+
+        // Kelas yang ada untuk ditampilkan
+        $schoolClasses = SchoolClass::all();
+
+        $dataGuru = [];
+        foreach ($teachers as $teacher) {
+            $dataGuru[] = [
+                'id' => $teacher->id,
+                'nama' => $teacher->name,
+                'mata_pelajaran' => $teacher->subject,
+                'jenis_kelamin' => $teacher->gender,
+                'tanggal_bergabung' => $teacher->hire_date,
+                'no_telepon' => $teacher->phone,
+                'email' => $teacher->email,
+            ];
+        }
         // Mengirim data ke view
         return view('dashboard.staff-tu-dashboard', compact(
             'siswaCount',
@@ -89,6 +134,7 @@ class StaffTataUsahaController extends Controller
             'absensiGuruCount',
             'sppData',
             'gajiData',
+            'subjects', 'subjectCounts', 'teachers', 'guruCounts',  // guru
             'siswaCountPerDay',
             'guruCountPerDay'
         ));
@@ -135,6 +181,7 @@ class StaffTataUsahaController extends Controller
         try {
             // Ambil data guru
             $students = Student::with(['class', 'grades'])->get();
+            // Ambil data guru
 
             // Hitung rata-rata nilai untuk setiap siswa
             $ranking = $students->map(function ($student) {
@@ -145,9 +192,32 @@ class StaffTataUsahaController extends Controller
                     'average_grade' => $averageGrade,
                 ];
             })->sortByDesc('average_grade')->values()->take(5);
-
             // Ambil data slip gaji guru
             $slipGajiGuru = SlipGajiGuru::with('guru')->get();  // Mengambil data slip gaji beserta data guru
+
+            $teachers = Teacher::with('classes')->get();
+            // Hitung persentase untuk setiap guru pada pelajaran masing-masing
+            $subjects = Teacher::select('subject')->get();
+
+            $subjectCounts = [];
+
+            foreach ($subjects as $subject) {
+                $subjectsList = explode(',', $subject->subject);
+                foreach ($subjectsList as $sub) {
+                    if (isset($subjectCounts[$sub])) {
+                        $subjectCounts[$sub]++;
+                    } else {
+                        $subjectCounts[$sub] = 1;
+                    }
+                }
+            }
+            arsort($subjectCounts);
+            // $subjectCounts = [];
+            $guruCounts = [];
+
+            foreach ($subjectCounts as $subject => $count) {
+                $guruCounts[$subject] = Teacher::where('subject', $subject)->count();
+            }
 
             // Menghitung statistik lainnya
             $jumlahSiswa = Student::count();
@@ -158,13 +228,134 @@ class StaffTataUsahaController extends Controller
             // Kelas yang ada untuk ditampilkan
             $schoolClasses = SchoolClass::all();
 
-            // Mengembalikan tampilan dengan data siswa, ranking, dan slip gaji
-            return view('resource.manajemen-guru.index', compact('students', 'schoolClasses', 'ranking', 'jumlahSiswa', 'jumlahGuru', 'jumlahKelas', 'jumlahFakultas', 'slipGajiGuru'));
+            $dataGuru = [];
+            foreach ($teachers as $teacher) {
+                $dataGuru[] = [
+                    'id' => $teacher->id,
+                    'nama' => $teacher->name,
+                    'mata_pelajaran' => $teacher->subject,
+                    'jenis_kelamin' => $teacher->gender,
+                    'tanggal_bergabung' => $teacher->hire_date,
+                    'no_telepon' => $teacher->phone,
+                    'email' => $teacher->email,
+                ];
+            }
+
+            // Mengembalikan tampilan dengan data guru
+            return view('resource.manajemen-guru.index', compact('students', 'subjects', 'subjectCounts', 'teachers', 'schoolClasses', 'ranking', 'jumlahSiswa', 'jumlahGuru', 'jumlahKelas', 'jumlahFakultas', 'slipGajiGuru', 'guruCounts', 'dataGuru'));
         } catch (\Exception $e) {
             // Log kesalahan
             \Log::error('Error in manajemenGuru: ' . $e->getMessage());
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function storeGuru(Request $request)
+    {
+        try {
+            // Validasi data yang masuk
+            $validatedData = $request->validate([
+                'name' => 'required',
+                'subject' => 'required',
+                'gender' => 'required',
+                'hire_date' => 'required',
+                'phone' => 'required',
+                'email' => 'required',
+                'gaji_pokok' => 'required',
+                'tunjangan' => 'required',
+                'potongan' => 'required',
+            ]);
+
+            // Ubah jenis kelamin menjadi 'Laki-laki' atau 'Perempuan'
+            if ($validatedData['gender'] == 'L') {
+                $validatedData['gender'] = 'Laki-laki';
+            } elseif ($validatedData['gender'] == 'P') {
+                $validatedData['gender'] = 'Perempuan';
+            }
+
+            // Membuat entri baru di database
+            Teacher::create($validatedData);
+
+            return response()->json(['message' => 'Data guru berhasil ditambahkan']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateGuru(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'subject' => 'required',
+            'gender' => 'required',
+            'hire_date' => 'required',
+            'phone' => 'required',
+            'email' => 'required',
+            'gaji_pokok' => 'required',
+            'tunjangan' => 'required',
+            'potongan' => 'required',
+        ]);
+
+        // Ubah jenis kelamin menjadi 'Laki-laki' atau 'Perempuan'
+        if ($validatedData['gender'] == 'L') {
+            $validatedData['gender'] = 'Laki-laki';
+        } elseif ($validatedData['gender'] == 'P') {
+            $validatedData['gender'] = 'Perempuan';
+        }
+
+        try {
+            $guru = Teacher::find($id);
+            $guru->name = $validatedData['name'];
+            $guru->subject = $validatedData['subject'];
+            $guru->gender = $validatedData['gender'];
+            $guru->hire_date = $validatedData['hire_date'];
+            $guru->phone = $validatedData['phone'];
+            $guru->email = $validatedData['email'];
+            $guru->gaji_pokok = $validatedData['gaji_pokok'];
+            $guru->tunjangan = $validatedData['tunjangan'];
+            $guru->potongan = $validatedData['potongan'];
+            $guru->save();
+            return response()->json(['message' => 'Data guru berhasil diupdate']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteGuru($id)
+    {
+        try {
+            $guru = Teacher::find($id);
+            $guru->delete();
+            return response()->json(['message' => 'Data guru berhasil dihapus']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getGuru($id)
+    {
+        try {
+            $guru = Teacher::find($id);
+            return response()->json([
+                'name' => $guru->name,
+                'subject' => $guru->subject,
+                'gender' => $guru->gender,
+                'hire_date' => $guru->hire_date,
+                'phone' => $guru->phone,
+                'email' => $guru->email,
+                'gaji_pokok' => $guru->gaji_pokok,
+                'tunjangan' => $guru->tunjangan,
+                'potongan' => $guru->potongan,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getGuruAll()
+    {
+        $guru = Teacher::all();
+        return response()->json($guru);
     }
 
     public function getSlipGaji()
@@ -182,8 +373,31 @@ class StaffTataUsahaController extends Controller
         // Ambil data guru yang belum terbayar
         $unpaidGurus = Teacher::whereNotIn('id', $paidGuruIds)->get();
 
+        // Buat array kosong untuk menampung data
+        $unpaidGurusData = [];
+
+        // Looping_through data guru yang belum terbayar
+        foreach ($unpaidGurus as $guru) {
+            // Buat array untuk menampung data guru
+            $guruData = [
+                'name' => $guru->name,
+                'tanggal_pembayaran' => null,  // Tidak ada tanggal pembayaran
+                'total_gaji' => 0,  // Tidak ada total gaji
+                'status_pembayaran' => 'Belum Terbayar',  // Status pembayaran
+            ];
+
+            // Push data guru ke array kosong
+            array_push($unpaidGurusData, $guruData);
+        }
+
         // Mengembalikan data dalam format JSON
-        return response()->json($unpaidGurus);
+        return response()->json($unpaidGurusData);
+    }
+
+    public function showSalaryList()
+    {
+        $slipGaji = SlipGajiGuru::with('guru')->get();  // Mengambil semua slip gaji beserta informasi guru
+        return view('resource.manajemen-gaji.index', compact('slipGaji'));  // Ganti dengan nama view yang sesuai
     }
 
     // SISWA
@@ -282,12 +496,6 @@ class StaffTataUsahaController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
         }
-    }
-
-    public function showSalaryList()
-    {
-        $slipGaji = SlipGajiGuru::with('guru')->get();  // Mengambil semua slip gaji beserta informasi guru
-        return view('resource.manajemen-gaji.index', compact('slipGaji'));  // Ganti dengan nama view yang sesuai
     }
 
     public function manajemenKelas()
