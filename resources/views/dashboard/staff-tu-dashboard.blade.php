@@ -223,8 +223,8 @@
                 </div>
 
                 <!-- End Sidebar navigation -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
+                <script defer>
+                    $(document).ready(function() {
                         const sidebar = document.getElementById('sidebarnav');
                         const workspace = document.querySelector('.container-fluid');
                         const spinnerContainer = document.getElementById('spinner-container');
@@ -235,19 +235,30 @@
                             icon.style.width = icon.getAttribute('data-icon-width') || '24px';
                             icon.style.height = icon.getAttribute('data-icon-height') || '24px';
                         });
+
                         let debounceTimer = null; // mendefinisikan variabel debounceTimer
-                        const debounceTimeout = 500; // mendefinisikan variabel debounceTimeout
+                        const debounceTimeout = 300; // mendefinisikan variabel debounceTimeout (dikurangi dari 500 menjadi 300)
 
                         sidebar.addEventListener('click', (e) => {
                             if (e.target.tagName === 'A' && e.target.hasAttribute('data-file')) {
+                                const file = e.target.getAttribute('data-file');
+                                console.log(`Menu ${file} diakses`);
                                 if (debounceTimer) {
                                     clearTimeout(debounceTimer);
                                 }
                                 debounceTimer = setTimeout(() => {
-                                    const file = e.target.getAttribute('data-file');
-                                    console.log(`Menu ${file} diakses`);
+                                    history.pushState(null, '', `/spa/${file}`); // Mengubah URL
                                     loadFile(file); // Memanggil fungsi loadFile untuk mengambil file
                                 }, debounceTimeout);
+                            }
+                        });
+
+                        window.addEventListener('popstate', function(event) {
+                            const path = window.location.pathname;
+                            if (path.startsWith('/spa/')) {
+                                const file = path.substring(5);
+                                console.log('URL berubah: ' + file);
+                                loadFile(file);
                             }
                         });
 
@@ -259,27 +270,15 @@
                             }
                         }
 
-                        function loadFile(file) {
+                        async function loadFile(file) {
+                            spinnerContainer.style.display = 'block'; // Menampilkan spinner
                             const url = `/spa/${file}`;
-                            fetch(url)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('Network response was not ok ' + response.statusText);
-                                    }
-                                    return response.text();
-                                })
-                                .then(content => {
-                                    workspace.innerHTML = content; // Menampilkan konten ke workspace
-                                    console.log(`File ${file} berhasil dimuat ke workspace.`);
-                                    components = {
-                                        "manajemen-siswa": initializeStudentManagement,
-                                        "manajemen-guru": initializeTeacherManagement,
-                                        "manajemen-kelas": initializeClassManagement,
-                                    };
-                                    initializeComponent(file);
-                                })
-                                .catch(error => {
-                                    console.error('Error occurred while loading file:', error);
+
+                            try {
+                                const response = await fetch(url);
+
+                                if (!response.ok) {
+                                    spinnerContainer.style.display = 'flex'; // Menampilkan spinner saat ada error
                                     $.notify({
                                         icon: '<span class="iconify" data-icon="mdi:alert" style="color: red;"><iconify-icon icon="solar:money-bag-bold-duotone" class="fs-6"></iconify-icon></span>',
                                         title: "Error!",
@@ -293,235 +292,161 @@
                                             align: "right"
                                         }
                                     });
-                                });
+                                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                                }
+
+                                const content = await response.text(); // Ambil konten dari response
+                                spinnerContainer.style.display = 'none'; // Sembunyikan spinner setelah berhasil
+                                workspace.innerHTML = content; // Tampilkan konten ke workspace
+                                console.log(`File ${file} berhasil dimuat ke workspace.`);
+
+                                // Definisikan components di dalam loadFile
+                                const components = {
+                                    "manajemen-siswa": initializeStudentManagement,
+                                    "manajemen-guru": initializeTeacherManagement,
+                                    "manajemen-kelas": initializeClassManagement
+                                };
+
+                                // Inisialisasi komponen
+                                initializeComponent(file, components);
+
+                            } catch (error) {
+                                console.error('Error occurred while loading file:', error);
+                                spinnerContainer.style.display = 'none'; // Sembunyikan spinner saat error
+                            }
                         }
 
+                        function initializeComponent(file, components) {
+                            if (components && components[file]) {
+                                components[file](); // Panggil fungsi inisialisasi yang sesuai
+                            } else {
+                                console.log("Komponen tidak dikenal");
+                            }
+                        }
+
+                        // load first page
+                        const initialPath = window.location.pathname;
+                        if (initialPath.startsWith('/spa/')) {
+                            const file = initialPath.substring(5);
+                            loadFile(file);
+                        }
 
                         function initializeTeacherManagement() {
                             console.log("Document ready");
-                            $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+
+                            // Fungsi untuk menangani error AJAX
+                            function handleAjaxError(event, jqxhr, settings, thrownError) {
                                 console.error("AJAX error terjadi:");
                                 console.error("URL:", settings.url);
                                 console.error("Error Message:", thrownError);
                                 console.error("Response Text:", jqxhr.responseText);
-                                $("#spinner").hide(); // Pastikan spinner disembunyikan saat error
-                            });
+                                $("#spinner").hide(); // Sembunyikan spinner saat error
+                            }
+
+                            // Fungsi untuk inisialisasi DataTable
+                            function initializeDataTable(tableId, url, columns) {
+                                return $(tableId).DataTable({
+                                    processing: true,
+                                    serverSide: false,
+                                    ajax: {
+                                        url: url,
+                                        type: "GET",
+                                        dataSrc: function(json) {
+                                            console.log(json); // Debugging data
+                                            return json;
+                                        }
+                                    },
+                                    columns: columns,
+                                    paginate: true,
+                                    pageLength: 5,
+                                });
+                            }
 
                             // Inisialisasi DataTable untuk slip gaji
-                            $('#slip-gaji-table').DataTable({
-                                processing: true,
-                                serverSide: false,
-                                ajax: {
-                                    url: "{{ route('api.slip-gaji') }}",
-                                    type: "GET",
-                                    dataSrc: function(json) {
-                                        console.log(json); // Debugging data
-                                        return json; // Pastikan ini mengembalikan data yang sesuai
-                                    }
+                            const slipGajiColumns = [{
+                                    data: 'guru.name',
+                                    name: 'guru.name'
                                 },
-                                columns: [{
-                                        data: 'guru.name',
-                                        name: 'guru.name'
-                                    }, // Nama guru
-                                    {
-                                        data: 'tanggal_pembayaran',
-                                        name: 'tanggal_pembayaran'
-                                    }, // Tanggal pembayaran
-                                    {
-                                        data: 'total_gaji',
-                                        name: 'total_gaji',
-                                        render: $.fn.dataTable.render.number(',', '.', 2, '$') // Format total gaji
-                                    },
-                                    {
-                                        data: 'status_pembayaran',
-                                        name: 'status_pembayaran',
-                                        render: function(data) {
-                                            return `<span class="badge badge-${data === 'Dibayar' ? 'success' : 'warning'}">${data}</span>`;
-                                        } // Status pembayaran
+                                {
+                                    data: 'tanggal_pembayaran',
+                                    name: 'tanggal_pembayaran'
+                                },
+                                {
+                                    data: 'total_gaji',
+                                    name: 'total_gaji',
+                                    render: $.fn.dataTable.render.number(',', '.', 2, '$')
+                                },
+                                {
+                                    data: 'status_pembayaran',
+                                    name: 'status_pembayaran',
+                                    render: function(data) {
+                                        return `<span class="badge badge-${data === 'Dibayar' ? 'success' : 'warning'}">${data}</span>`;
                                     }
-                                ],
-                                paginate: true,
-                                pageLength: 5,
-                            });
-
+                                }
+                            ];
+                            initializeDataTable('#slip-gaji-table', "{{ route('api.slip-gaji') }}", slipGajiColumns);
 
                             // Inisialisasi DataTable untuk guru yang belum terbayar
-                            // Inisialisasi DataTable untuk guru yang belum terbayar
-                            $('#unpaid-guru-table').DataTable({
-                                processing: true,
-                                ajax: {
-                                    url: "{{ route('api.slip-gaji.unpaid') }}",
-                                    type: "GET",
-                                    dataSrc: function(json) {
-                                        console.log(json); // Cek data yang diterima
-                                        return json; // Pastikan ini mengembalikan data yang sesuai
-                                    }
+                            const unpaidGuruColumns = [{
+                                    data: 'name',
+                                    name: 'name'
                                 },
-                                columns: [{
-                                        data: 'name',
-                                        name: 'name'
-                                    }, // Nama guru
-                                    {
-                                        data: 'tanggal_pembayaran',
-                                        name: 'tanggal_pembayaran'
-                                    }, // Tanggal pembayaran
-                                    {
-                                        data: 'total_gaji',
-                                        name: 'total_gaji',
-                                        render: $.fn.dataTable.render.number(',', '.', 2, '$') // Format total gaji
-                                    },
-                                    {
-                                        data: 'status_pembayaran',
-                                        name: 'status_pembayaran',
-                                        render: function(data) {
-                                            return `<span class="badge badge-${data === 'Dibayar'? 'success' : 'warning'}">${data}</span>`;
-                                        } // Status pembayaran
+                                {
+                                    data: 'tanggal_pembayaran',
+                                    name: 'tanggal_pembayaran'
+                                },
+                                {
+                                    data: 'total_gaji',
+                                    name: 'total_gaji',
+                                    render: $.fn.dataTable.render.number(',', '.', 2, '$')
+                                },
+                                {
+                                    data: 'status_pembayaran',
+                                    name: 'status_pembayaran',
+                                    render: function(data) {
+                                        return `<span class="badge badge-${data === 'Dibayar' ? 'success' : 'warning'}">${data}</span>`;
                                     }
-                                ],
-                                paginate: true,
-                                pageLength: 5,
-                            });
-
+                                }
+                            ];
+                            initializeDataTable('#unpaid-guru-table', "{{ route('api.slip-gaji.unpaid') }}",
+                                unpaidGuruColumns);
 
                             // Fungsi untuk mengaktifkan tab
                             $('.nav-tabs a').on('click', function(e) {
                                 e.preventDefault();
                                 $(this).tab('show');
                             });
-                            var table = $("#add-row").DataTable({
-                                pageLength: 5,
-                                ajax: {
-                                    url: "/guru",
-                                    dataSrc: ''
-                                },
-                                columns: [{
+
+                            // Inisialisasi DataTable untuk tabel guru
+                            const guruTableColumns = [{
                                     data: 'name'
-                                }, {
+                                },
+                                {
                                     data: 'subject'
-                                }, {
+                                },
+                                {
                                     data: 'gender'
-                                }, {
+                                },
+                                {
                                     data: null,
                                     render: function(data, type, row) {
                                         return '<button type="button" class="btn btn-link btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#editRowModal" data-id="' +
-                                            row.id + '" data-name="' + row.name + '" data-subject="' + row
-                                            .subject +
+                                            row.id + '" data-name="' + row.name + '" data-subject="' + row.subject +
                                             '"><i class="fa fa-edit"></i></button>' +
                                             '<button type="button" class="btn btn-link btn-danger" data-id="' +
                                             row.id + '"><i class="fa fa-times"></i></button>';
                                     }
-                                }]
-                            });
-                            $('.modal').on('show.bs.modal', function() {
-                                var backdrop = $('.modal-backdrop');
-                                if (backdrop.length > 1) {
-                                    backdrop.not(':first').remove();
                                 }
-                            });
-                            $("#addGuruButton").click(function() {
-                                var nama = $("#nama").val();
-                                var mata_pelajaran = $("#mata_pelajaran").val();
-                                var jenis_kelamin = $("#jenis_kelamin").val();
-                                var tanggal_bergabung = $("#tanggal_bergabung").val();
-                                var no_telepon = $("#no_telepon").val();
-                                var email = $("#email").val();
-                                var gaji_pokok = $("#gaji_pokok").val();
-                                var tunjangan = $("#tunjangan").val();
-                                var potongan = $("#potongan").val();
+                            ];
+                            const guruTable = initializeDataTable("#add-row", "/guru", guruTableColumns);
 
-                                // Periksa apakah semua field sudah diisi
-                                if (nama === "" || mata_pelajaran === "" || jenis_kelamin === "" ||
-                                    tanggal_bergabung ===
-                                    "" || no_telepon === "" || email === "" || gaji_pokok === "" || tunjangan === "" ||
-                                    potongan === "") {
-                                    // Notifikasi gagal
-                                    $.notify({
-                                        icon: '<span class="iconify" data-icon="akar-icons:error" style="color: red;"></span>',
-                                        title: "Gagal!",
-                                        message: "Silakan isi semua field yang kosong."
-                                    }, {
-                                        type: "danger",
-                                        delay: 5000,
-                                        timer: 1000,
-                                        placement: {
-                                            from: "top",
-                                            align: "right"
-                                        }
-                                    });
-                                    return;
-                                }
-
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/guru/tambah",
-                                    data: {
-                                        name: nama,
-                                        subject: mata_pelajaran,
-                                        gender: jenis_kelamin,
-                                        hire_date: tanggal_bergabung,
-                                        phone: no_telepon,
-                                        email: email,
-                                        gaji_pokok: gaji_pokok,
-                                        tunjangan: tunjangan,
-                                        potongan: potongan
-                                    },
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    success: function(data) {
-                                        console.log("Data guru berhasil ditambahkan: ", data);
-
-                                        // Notifikasi sukses
-                                        $.notify({
-                                            icon: "",
-                                            title: "Berhasil!",
-                                            message: "Data guru berhasil ditambahkan."
-                                        }, {
-                                            type: "success",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-
-
-                                        // Tutup modal
-                                        $("#addRowModal").modal('hide');
-                                        $('.modal-backdrop').remove();
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.log("Error menambahkan guru: ", xhr.responseText);
-
-                                        // Notifikasi gagal
-                                        $.notify({
-                                            icon: '<i class="fas fa-exclamation-triangle" style="color: red;"></i>',
-                                            title: "Gagal!",
-                                            message: "Terjadi kesalahan saat menambahkan guru."
-                                        }, {
-                                            type: "danger",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-
-                                    }
-                                });
-                            });
-
-
-                            // Event untuk memuatkan data guru ke dalam modal edit
+                            // Event untuk memuat data guru ke dalam modal edit
                             $("#add-row").on("click", ".btn-link.btn-primary", function() {
-                                var id = $(this).data("id");
+                                const id = $(this).data("id");
                                 console.log("ID guru: ", id);
-                                $.ajax({
-                                    type: "GET",
-                                    url: "/guru/" + id,
-                                    success: function(data) {
+                                fetch(`/guru/${id}`)
+                                    .then(response => response.json())
+                                    .then(data => {
                                         console.log("Data guru: ", data);
                                         $("#editName").val(data.name);
                                         $("#editSubject").val(data.subject);
@@ -534,149 +459,101 @@
                                         $("#editPotongan").val(data.potongan);
                                         $("#editRowButton").data("id", id);
                                         $("#editRowModal").modal("show");
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.log("Error mengambil data guru: ", xhr.responseText);
-                                    }
-                                });
+                                    })
+                                    .catch(error => console.error("Error mengambil data guru: ", error));
                             });
+
                             // Fungsi untuk mengupdate guru
-                            $("#editRowButton").click(function() {
-                                var id = $(this).data("id");
-                                var name = $("#editName").val();
-                                var subject = $("#editSubject").val();
-                                var gender = $("#editGender").val();
-                                var hireDate = $("#editHireDate").val();
-                                var phone = $("#editPhone").val();
-                                var email = $("#editEmail").val();
-                                var gajiPokok = $("#editGajiPokok").val();
-                                var tunjangan = $("#editTunjangan").val();
-                                var potongan = $("#editPotongan").val();
+                            $("#editRowButton").click(async function() {
+                                const id = $(this).data("id");
+                                const data = {
+                                    name: $("#editName").val(),
+                                    subject: $("#editSubject").val(),
+                                    gender: $("#editGender").val(),
+                                    hire_date: $("#editHireDate").val(),
+                                    phone: $("#editPhone").val(),
+                                    email: $("#editEmail").val(),
+                                    gaji_pokok: $("#editGajiPokok").val(),
+                                    tunjangan: $("#editTunjangan").val(),
+                                    potongan: $("#editPotongan").val(),
+                                };
 
-                                $.ajax({
-                                    type: "PUT",
-                                    url: "/guru/update/" + id,
-                                    data: {
-                                        name: name,
-                                        subject: subject,
-                                        gender: gender,
-                                        hire_date: hireDate,
-                                        phone: phone,
-                                        email: email,
-                                        gaji_pokok: gajiPokok,
-                                        tunjangan: tunjangan,
-                                        potongan: potongan,
-                                    },
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    success: function(data) {
-                                        console.log("Data guru berhasil diupdate");
-                                        // Tampilkan notifikasi sukses
-                                        $.notify({
-                                            icon: '<i class="fas fa-check" style="color: green;"></i>',
-                                            title: "Berhasil!",
-                                            message: "Data guru berhasil diupdate."
-                                        }, {
-                                            type: "success",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-                                        $("#editRowModal").modal("hide");
-                                        table.ajax.reload();
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.log("Error mengupdate guru: ", xhr.responseText);
-                                        // Tampilkan notifikasi error
-                                        $.notify({
-                                            icon: '<i class="fas fa-exclamation-triangle" style="color: red;"></i>',
-                                            title: "Gagal!",
-                                            message: "Terjadi kesalahan saat mengupdate guru."
-                                        }, {
-                                            type: "danger",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-                                    }
-                                });
+                                try {
+                                    const response = await fetch(`/guru/update/${id}`, {
+                                        method: "PUT",
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                        },
+                                        body: JSON.stringify(data)
+                                    });
+                                    if (!response.ok) throw new Error("Gagal mengupdate guru");
+                                    console.log("Data guru berhasil diupdate");
+                                    guruTable.ajax.reload();
+                                    $("#editRowModal").modal("hide");
+                                    showNotification("success", "Data guru berhasil diupdate.");
+                                } catch (error) {
+                                    console.error("Error mengupdate guru: ", error);
+                                    showNotification("danger", "Terjadi kesalahan saat mengupdate guru.");
+                                }
                             });
 
-                            // Event click pada button hapus di tabel
+                            // Event untuk menghapus guru
                             $("#add-row").on("click", ".btn-link.btn-danger", function() {
-                                var id = $(this).data("id");
+                                const id = $(this).data("id");
                                 console.log("ID guru untuk dihapus: ", id);
-
-                                // Menyimpan ID guru ke dalam modal
                                 $("#deleteRowButtonConfirm").data("id", id);
-
-                                // Membuka modal konfirmasi
                                 $("#deleteRowModal").modal("show");
                             });
 
-                            // Event untuk button konfirmasi hapus di modal
-                            $("#deleteRowButtonConfirm").click(function() {
-                                var id = $(this).data("id");
-                                console.log("ID guru yang akan dihapus: ", id);
-                                $.ajax({
-                                    type: "DELETE",
-                                    url: "/guru/delete/" + id,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    success: function(data) {
-                                        console.log(data);
-                                        table.ajax.reload();
-                                        $("#deleteRowModal").modal("hide");
-
-                                        // Notifikasi sukses
-                                        $.notify({
-                                            icon: '<i class="fas fa-check" style="color: green;"></i>',
-                                            title: "Dihapus!",
-                                            message: "Data guru berhasil dihapus."
-                                        }, {
-                                            type: "success",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.log(xhr.responseText);
-
-                                        // Notifikasi gagal
-                                        $.notify({
-                                            icon: '<i class="fas fa-exclamation-triangle" style="color: red;"></i>',
-                                            title: "Gagal!",
-                                            message: "Terjadi kesalahan saat menghapus guru."
-                                        }, {
-                                            type: "danger",
-                                            delay: 5000,
-                                            timer: 1000,
-                                            placement: {
-                                                from: "top",
-                                                align: "right"
-                                            }
-                                        });
-                                    }
-                                });
+                            // Konfirmasi hapus guru
+                            $("#deleteRowButtonConfirm").click(async function() {
+                                const id = $(this).data("id");
+                                try {
+                                    const response = await fetch(`/guru/delete/${id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                        }
+                                    });
+                                    if (!response.ok) throw new Error("Gagal menghapus guru");
+                                    console.log("Data guru berhasil dihapus");
+                                    guruTable.ajax.reload();
+                                    $("#deleteRowModal").modal("hide");
+                                    showNotification("success", "Data guru berhasil dihapus.");
+                                } catch (error) {
+                                    console.error("Error menghapus guru: ", error);
+                                    showNotification("danger", "Terjadi kesalahan saat menghapus guru.");
+                                }
                             });
 
-                            function scrollToTable() {
-                                document.getElementById('tableGuru').scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'start'
+                            // Fungsi untuk menampilkan notifikasi
+                            function showNotification(type, message) {
+                                $.notify({
+                                    icon: `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}" style="color: ${type === 'success' ? 'green' : 'red'};"></i>`,
+                                    title: type === 'success' ? "Berhasil!" : "Gagal!",
+                                    message: message
+                                }, {
+                                    type: type,
+                                    delay: 5000,
+                                    timer: 1000,
+                                    placement: {
+                                        from: "top",
+                                        align: "right"
+                                    }
                                 });
+                            }
+
+                            function scrollToTable() {
+                                const tableGuru = document.getElementById('tabelGuru1');
+                                if (tableGuru) {
+                                    tableGuru.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'start'
+                                    });
+                                } else {
+                                    console.error('Error: Elemen dengan ID "tableGuru" tidak ditemukan.');
+                                }
                             }
                             var doughnutChart = document.getElementById("doughnutChart").getContext("2d");
 
@@ -689,16 +566,9 @@
                                             length: @json(count($subjectCounts))
                                         }, (_, i) => {
                                             const colors = [
-                                                "#f3545d",
-                                                "#fdaf4b",
-                                                "#1d7af3",
-                                                "#59d05d",
-                                                "#177dff",
-                                                "#ffc107",
-                                                "#33cc33",
-                                                "#6666cc",
-                                                "#cc33cc",
-                                                "#33cccc",
+                                                "#f3545d", "#fdaf4b", "#1d7af3", "#59d05d",
+                                                "#177dff", "#ffc107", "#33cc33", "#6666cc",
+                                                "#cc33cc", "#33cccc",
                                             ];
                                             return colors[i % colors.length];
                                         }),
@@ -755,11 +625,18 @@
 
                         function initializeStudentManagement() {
                             console.log("Document ready");
-
+                            $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+                                console.error("AJAX error terjadi:");
+                                console.error("URL:", settings.url);
+                                console.error("Error Message:", thrownError);
+                                console.error("Response Text:", jqxhr.responseText);
+                                $("#spinner").hide(); // Pastikan spinner disembunyikan saat error
+                            });
                             var table = $("#add-row").DataTable({
                                 pageLength: 5,
                                 ajax: {
-                                    url: "/siswa", // URL untuk mengambil data siswa
+                                    url: "/siswa" // URL untuk mengambil data siswa
+                                        ,
                                     dataSrc: '' // Menggunakan data langsung dari array
                                 },
                                 columns: [{
@@ -771,8 +648,7 @@
                                             return data ? data.name :
                                                 'N/A'; // Menampilkan nama kelas atau 'N/A' jika tidak ada
                                         }
-                                    },
-                                    {
+                                    }, {
                                         data: 'gender'
                                     }, // Kolom jenis kelamin
                                     {
@@ -799,7 +675,20 @@
 
                                 // Validasi input
                                 if (!name || !dob || !classId || !gender || !address || !phone || !email) {
-                                    alert("Semua field harus diisi!"); // Menampilkan pesan kesalahan
+                                    // Notifikasi gagal
+                                    $.notify({
+                                        icon: '<span class="iconify" data-icon="akar-icons:error" style="color: red;"></span>',
+                                        title: "Gagal!",
+                                        message: "Silakan isi semua field yang kosong."
+                                    }, {
+                                        type: "danger",
+                                        delay: 5000,
+                                        timer: 1000,
+                                        placement: {
+                                            from: "top",
+                                            align: "right"
+                                        }
+                                    });
                                     return; // Menghentikan eksekusi jika ada field yang kosong
                                 }
 
@@ -824,11 +713,9 @@
                                         $("#addRowModal").modal("hide");
                                         table.ajax.reload();
                                         $("#addStudentForm")[0].reset();
-
                                         // Notifikasi sukses
                                         $.notify({
                                             icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
-                                            // Ganti dengan ikon yang sesuai
                                             title: "Berhasil!",
                                             message: "Data siswa berhasil ditambahkan."
                                         }, {
@@ -846,8 +733,7 @@
 
                                         // Notifikasi gagal
                                         $.notify({
-                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
-                                            // Ganti dengan ikon yang sesuai
+                                            icon: '<span class="iconify" data-icon="akar-icons:error" style="color: red;"></span>', // Ganti dengan ikon Iconify yang sesuai
                                             title: "Gagal!",
                                             message: "Terjadi kesalahan saat menambahkan siswa."
                                         }, {
@@ -861,9 +747,7 @@
                                         });
                                     }
                                 });
-
                             });
-
 
                             // Event untuk memuatkan data siswa ke dalam modal edit
                             $("#add-row").on("click", ".btn-link.btn-primary", function() {
@@ -908,7 +792,8 @@
                                     data: {
                                         name: name,
                                         dob: dob,
-                                        class_id: classId, // Mengirim ID kelas yang dipilih
+                                        class_id: classId // Mengirim ID kelas yang dipilih
+                                            ,
                                         gender: gender,
                                         address: address,
                                         phone: phone,
@@ -925,7 +810,6 @@
                                         // Notifikasi sukses
                                         $.notify({
                                             icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
-                                            // Ganti dengan ikon yang sesuai
                                             title: "Berhasil!",
                                             message: "Data siswa berhasil diupdate."
                                         }, {
@@ -943,8 +827,7 @@
 
                                         // Notifikasi gagal
                                         $.notify({
-                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
-                                            // Ganti dengan ikon yang sesuai
+                                            icon: '<span class="iconify" data-icon="akar-icons:error" style="color: red;"></span>', // Ganti dengan ikon Iconify yang sesuai
                                             title: "Gagal!",
                                             message: "Terjadi kesalahan saat mengupdate siswa."
                                         }, {
@@ -958,10 +841,7 @@
                                         });
                                     }
                                 });
-
                             });
-
-
 
                             // Event click pada button hapus di tabel
                             $("#add-row").on("click", ".btn-link.btn-danger", function() {
@@ -992,8 +872,7 @@
 
                                         // Notifikasi sukses
                                         $.notify({
-                                            icon: '<span class="line-md:circle-filled-to-confirm-circle-filled-transition" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
-                                            // Ganti dengan ikon yang sesuai
+                                            icon: '<span class="iconify" data-icon="akar-icons:check" style="color: green;"></span>', // Ganti dengan ikon Iconify yang sesuai
                                             title: "Dihapus!",
                                             message: "Data siswa berhasil dihapus."
                                         }, {
@@ -1011,8 +890,7 @@
 
                                         // Notifikasi gagal
                                         $.notify({
-                                            icon: '<i class="fas fa-chalkboard-teacher"></i>',
-                                            // Ganti dengan ikon yang sesuai
+                                            icon: '<span class="iconify" data-icon="akar-icons:error" style="color: red;"></span>', // Ganti dengan ikon Iconify yang sesuai
                                             title: "Gagal!",
                                             message: "Terjadi kesalahan saat menghapus siswa."
                                         }, {
@@ -1027,118 +905,8 @@
                                     }
                                 });
                             });
-
-                            // Event untuk memuatkan data siswa ke dalam modal edit
-                            $("#add-row").on("click", ".btn-link.btn-primary", function() {
-                                var id = $(this).data("id"); // Mengambil ID dari data-id pada tombol edit
-                                console.log("ID siswa: ", id);
-                                $.ajax({
-                                    type: "GET",
-                                    url: "/siswa/" + id,
-                                    success: function(data) {
-                                        console.log("Data siswa: ", data);
-                                        $("#editName").val(data.name);
-                                        $("#editDob").val(data.dob);
-                                        $("#editClass").val(data.class_id);
-                                        $("#editGender").val(data.gender);
-                                        $("#editAddress").val(data.address);
-                                        $("#editPhone").val(data.phone);
-                                        $("#editEmail").val(data.email);
-                                        $("#editRowButton").data("id", id); // Simpan ID pada tombol simpan
-                                        $("#editRowModal").modal("show"); // Tampilkan modal edit
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.log("Error mengambil data siswa: ", xhr.responseText);
-                                    }
-                                });
-                            });
                         }
                         // Implementasi fungsi lainnya untuk manajemen guru, kelas, dsb.
-                    });
-                    // Fungsi untuk menampilkan spinner
-                    var showSpinner = function() {
-                        console.log("Menampilkan spinner...");
-                        var spinner = document.getElementById("spinner");
-                        var spinnerContainer = document.getElementById("spinner-container");
-
-                        spinnerContainer.style.display = "flex"; // Menampilkan div spinner-container
-                        spinner.style.display = "flex"; // Menampilkan spinner
-                        spinner.style.visibility = "visible"; // Membuat spinner terlihat
-
-                        // Menambahkan animasi masuk untuk teks "Loading..."
-                        document.getElementById("loadingText").classList.add("animate__animated",
-                            "animate__lightSpeedInLeft");
-                    };
-
-                    // Fungsi untuk menyembunyikan spinner dengan animasi
-                    var hideSpinner = function() {
-                        console.log("Menghapus spinner...");
-                        var spinner = document.getElementById("spinner");
-                        var loadingText = document.getElementById("loadingText");
-                        var spinnerContainer = document.getElementById("spinner-container");
-
-                        // Hapus animasi pada loadingText
-                        loadingText.classList.remove("animate__lightSpeedInLeft");
-                        loadingText.classList.remove("animate__animated");
-
-                        // Tambahkan animasi keluar pada loadingText
-                        loadingText.classList.add("animate__lightSpeedOutRight");
-                        loadingText.classList.add("animate__animated");
-
-                        // Tambahkan animasi fadeOut pada spinner
-                        spinner.classList.add("animate__fadeOut");
-                        spinner.classList.add("animate__animated");
-
-                        // Tunggu sampai animasi selesai (1 detik) dan sembunyikan spinner
-                        setTimeout(function() {
-                            console.log("Sembunyikan spinner dan teks setelah animasi selesai...");
-                            spinner.style.visibility = "hidden"; // Membuat spinner tidak terlihat
-                            spinner.style.opacity = 0; // Membuat spinner transparan
-                            spinner.style.display = "none"; // Menyembunyikan spinner
-
-                            loadingText.style.visibility = "hidden"; // Membuat text tidak terlihat
-                            loadingText.style.opacity = 0; // Membuat text transparan
-                            loadingText.style.display = "none"; // Menyembunyikan text
-
-                            spinnerContainer.style.display = "none"; // Menyembunyikan div spinner-container
-
-                            // Reset animasi pada loadingText
-                            loadingText.classList.remove("animate__lightSpeedOutRight");
-                            loadingText.classList.remove("animate__animated");
-
-                            // Reset animasi pada spinner
-                            spinner.classList.remove("animate__fadeOut");
-                            spinner.classList.remove("animate__animated");
-
-                            console.log('Animasi selesai, class animasi direset');
-                        }, 1000); // durasi animasi
-
-                        // Reset status spinner
-                        localStorage.setItem('spinnerShown', 'true');
-                        console.log('localStorage reset');
-                        console.log('Spinner telah di hide');
-                    };
-
-                    // Panggil `showSpinner` saat halaman dimuat
-                    showSpinner();
-
-                    // Simulasi penggunaan spinner
-                    setTimeout(function() {
-                        hideSpinner();
-                    }, 3000); // Spinner akan hilang setelah 3 detik
-                    function resetActiveClass() {
-                        const sidebarItems = document.querySelectorAll('.sidebar-item');
-                        sidebarItems.forEach((item) => {
-                            item.classList.remove('active');
-                        });
-                    }
-                    const sidebar = document.getElementById('sidebarnav');
-
-                    sidebar.addEventListener('click', (e) => {
-                        if (e.target.tagName === 'A' && e.target.hasAttribute('data-file')) {
-                            resetActiveClass();
-                            e.target.classList.add('active');
-                        }
                     });
                 </script>
 
@@ -1209,6 +977,12 @@
             <!--  Header End -->
             <div class="container-fluid">
                 <div class="row">
+                    <div id="spinner-container" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
                     {{-- TAMPILAN IKON --}}
                     <div class="row tampilan_ikon_dashboard">
                         <div class="row">
@@ -1291,11 +1065,12 @@
                         </div>
                     </div>
                     {{-- trafix absensi --}}
-                    <div class="col-lg-8 tampilan_trafik_absensi">
-                        <div class="h-80 card">
+                    {{-- trafix absensi --}}
+                    <div class="col-lg-8">
+                        <div class="card">
                             <div class="card-body">
                                 <h5 class="gap-2 mb-4 card-title d-flex align-items-center">
-                                    Traffic Daftar Hadir
+                                    Traffic Overview
                                     <span>
                                         <iconify-icon icon="solar:question-circle-bold" class="fs-7 d-flex text-muted"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
@@ -1313,14 +1088,29 @@
                                             console.log('Data siswaCountPerDay:', siswaCountPerDay);
                                             console.log('Data guruCountPerDay:', guruCountPerDay);
 
-                                            // Pastikan nilai yang dikirim adalah integer
-                                            const siswaData = Object.values(siswaCountPerDay).map(val => Math.floor(val));
-                                            const guruData = Object.values(guruCountPerDay).map(val => Math.floor(val));
+                                            // Fungsi untuk memproses data dan memastikan integer
+                                            const processData = (data) => {
+                                                try {
+                                                    if (typeof data === 'string') {
+                                                        data = JSON.parse(data)
+                                                    }
+                                                    return Object.values(data).map(val => Math.floor(val));
+                                                } catch (error) {
+                                                    console.error('Error parsing/processing data:', error);
+                                                    return []; // Return empty array if error parsing JSON
+                                                }
+                                            };
+
+                                            const siswaData = processData(siswaCountPerDay);
+                                            const guruData = processData(guruCountPerDay);
 
                                             console.log('Data siswaData:', siswaData);
                                             console.log('Data guruData:', guruData);
 
-                                            // Data untuk grafik
+                                            // Konstanta untuk kategori
+                                            const categories = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+                                            // Konfigurasi chart
                                             var chart = {
                                                 series: [{
                                                         name: "Siswa",
@@ -1368,7 +1158,7 @@
                                                     axisTicks: {
                                                         show: false,
                                                     },
-                                                    categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+                                                    categories: categories,
                                                 },
                                                 yaxis: {
                                                     tickAmount: 4,
@@ -1380,9 +1170,7 @@
                                                 tooltip: {
                                                     theme: "dark",
                                                     y: {
-                                                        formatter: function(value) {
-                                                            return Math.floor(value); // Menampilkan tanpa desimal
-                                                        }
+                                                        formatter: value => Math.floor(value) // Menampilkan tanpa desimal
                                                     }
                                                 },
                                             };
@@ -1404,9 +1192,11 @@
                                         }
                                     });
                                 </script>
+
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-4">
                         {{-- <div class="col-md-4"> --}}
                         <div class="card">
@@ -1567,188 +1357,6 @@
 
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="gap-2 pb-3 mb-5 card-title d-flex align-items-center">Sessions by
-                                device<span>
-                                    <iconify-icon icon="solar:question-circle-bold" class="fs-7 d-flex text-muted"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        data-bs-custom-class="tooltip-success" data-bs-title="Locations">
-                                    </iconify-icon>
-                                </span>
-                            </h5>
-                            <div class="row">
-                                <div class="col-4">
-                                    <iconify-icon icon="solar:laptop-minimalistic-line-duotone"
-                                        class="fs-7 d-flex text-primary"></iconify-icon>
-                                    <span class="mt-2 fs-11 d-block text-nowrap">Computers</span>
-                                    <h4 class="mt-1 mb-0">87%</h4>
-                                </div>
-                                <div class="col-4">
-                                    <iconify-icon icon="solar:smartphone-line-duotone"
-                                        class="fs-7 d-flex text-secondary"></iconify-icon>
-                                    <span class="mt-2 fs-11 d-block text-nowrap">Smartphone</span>
-                                    <h4 class="mt-1 mb-0">9.2%</h4>
-                                </div>
-                                <div class="col-4">
-                                    <iconify-icon icon="solar:tablet-line-duotone" class="fs-7 d-flex text-success">
-                                    </iconify-icon>
-                                    <span class="mt-2 fs-11 d-block text-nowrap">Tablets</span>
-                                    <h4 class="mt-1 mb-0">3.1%</h4>
-                                </div>
-                            </div>
-
-                            <div class="gap-4 pt-2 mt-7 vstack">
-                                <div>
-                                    <div class="hstack justify-content-between">
-                                        <span class="fs-3 fw-medium">Computers</span>
-                                        <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">87%</h6>
-                                    </div>
-                                    <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
-                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-primary" style="width: 100%"></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="hstack justify-content-between">
-                                        <span class="fs-3 fw-medium">Smartphones</span>
-                                        <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">9.2%</h6>
-                                    </div>
-                                    <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
-                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-secondary" style="width: 50%"></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div class="hstack justify-content-between">
-                                        <span class="fs-3 fw-medium">Tablets</span>
-                                        <h6 class="mb-0 fs-3 fw-medium text-dark lh-base">3.1%</h6>
-                                    </div>
-                                    <div class="mt-6 progress" role="progressbar" aria-label="Warning example"
-                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-                                        <div class="progress-bar bg-success" style="width: 35%"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="overflow-hidden card hover-img">
-                        <div class="position-relative">
-                            <a href="javascript:void(0)">
-                                <img src="{{ asset('test/assets/images/blog/blog-img1.jpg') }}" class="card-img-top"
-                                    alt="matdash-img">
-                            </a>
-                            <span
-                                class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
-                                min Read</span>
-                            <img src="{{ asset('test/assets/images/profile/user-3.jpg') }}" alt="matdash-"
-                                class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
-                                width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Georgeanna Ramero">
-                        </div>
-                        <div class="p-4 card-body">
-                            <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Social</span>
-                            <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">As yen
-                                tumbles, gadget-loving
-                                Japan goes
-                                for secondhand iPhones</a>
-                            <div class="gap-4 d-flex align-items-center">
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-eye text-dark fs-5"></i>9,125
-                                </div>
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-message-2 text-dark fs-5"></i>3
-                                </div>
-                                <div class="d-flex align-items-center fs-2 ms-auto">
-                                    <i class="ti ti-point text-dark"></i>Mon, Dec 19
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="overflow-hidden card hover-img">
-                        <div class="position-relative">
-                            <a href="javascript:void(0)">
-                                <img src="{{ asset('test/assets/images/blog/blog-img2.jpg') }}" class="card-img-top"
-                                    alt="matdash-img">
-                            </a>
-                            <span
-                                class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
-                                min Read</span>
-                            <img src="{{ asset('test/assets/images/profile/user-2.jpg') }}" alt="matdash-"
-                                class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
-                                width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Georgeanna Ramero">
-                        </div>
-                        <div class="p-4 card-body">
-                            <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Gadget</span>
-                            <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">Intel
-                                loses bid to revive
-                                antitrust case
-                                against patent foe Fortress</a>
-                            <div class="gap-4 d-flex align-items-center">
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-eye text-dark fs-5"></i>4,150
-                                </div>
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-message-2 text-dark fs-5"></i>38
-                                </div>
-                                <div class="d-flex align-items-center fs-2 ms-auto">
-                                    <i class="ti ti-point text-dark"></i>Sun, Dec 18
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="overflow-hidden card hover-img">
-                        <div class="position-relative">
-                            <a href="javascript:void(0)">
-                                <img src="{{ asset('test/assets/images/blog/blog-img3.jpg') }}" class="card-img-top"
-                                    alt="matdash-img">
-                            </a>
-                            <span
-                                class="bottom-0 px-2 py-1 mb-9 badge text-bg-light text-dark fs-2 lh-sm me-9 fw-semibold position-absolute end-0">2
-                                min Read</span>
-                            <img src="{{ asset('test/assets/images/profile/user-3.jpg') }}" alt="matdash-img"
-                                class="bottom-0 img-fluid rounded-circle position-absolute start-0 mb-n9 ms-9"
-                                width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Georgeanna Ramero">
-                        </div>
-                        <div class="p-4 card-body">
-                            <span class="px-2 py-1 mt-3 badge text-bg-light fs-2 lh-sm">Health</span>
-                            <a class="my-4 d-block fs-5 text-dark fw-semibold link-primary" href="">COVID
-                                outbreak deepens as more
-                                lockdowns
-                                loom in China</a>
-                            <div class="gap-4 d-flex align-items-center">
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-eye text-dark fs-5"></i>9,480
-                                </div>
-                                <div class="gap-2 d-flex align-items-center">
-                                    <i class="ti ti-message-2 text-dark fs-5"></i>12
-                                </div>
-                                <div class="d-flex align-items-center fs-2 ms-auto">
-                                    <i class="ti ti-point text-dark"></i>Sat, Dec 17
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-6 py-6 text-center">
-                    <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
-                            class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>Distributed by <a
-                            href="https://themewagon.com/" target="_blank"
-                            class="pe-1 text-primary text-decoration-underline">ThemeWagon</a></p>
-                </div>
-
 
 
             </div>
@@ -1788,16 +1396,8 @@
                         length: @json(count($subjectCounts))
                     }, (_, i) => {
                         const colors = [
-                            "#f3545d",
-                            "#fdaf4b",
-                            "#1d7af3",
-                            "#59d05d",
-                            "#177dff",
-                            "#ffc107",
-                            "#33cc33",
-                            "#6666cc",
-                            "#cc33cc",
-                            "#33cccc",
+                            "#f3545d", "#fdaf4b", "#1d7af3", "#59d05d", "#177dff", "#ffc107",
+                            "#33cc33", "#6666cc", "#cc33cc", "#33cccc",
                         ];
                         return colors[i % colors.length];
                     }),
@@ -1844,6 +1444,90 @@
         console.log('Data subjects:', @json($subjectCounts));
         console.log('Data teachers:', @json($teachers));
         console.log('Data subjectCounts:', @json($subjectCounts));
+        // Fungsi untuk menampilkan spinner
+        var showSpinner = function() {
+            console.log("Menampilkan spinner...");
+            var spinner = document.getElementById("spinner");
+            var spinnerContainer = document.getElementById("spinner-container");
+
+            spinnerContainer.style.display = "flex"; // Menampilkan div spinner-container
+            spinner.style.display = "flex"; // Menampilkan spinner
+            spinner.style.visibility = "visible"; // Membuat spinner terlihat
+
+            // Menambahkan animasi masuk untuk teks "Loading..."
+            document.getElementById("loadingText").classList.add("animate__animated", "animate__lightSpeedInLeft");
+        };
+
+        // Fungsi untuk menyembunyikan spinner dengan animasi
+        var hideSpinner = function() {
+            console.log("Menghapus spinner...");
+            var spinner = document.getElementById("spinner");
+            var loadingText = document.getElementById("loadingText");
+            var spinnerContainer = document.getElementById("spinner-container");
+
+            // Hapus animasi pada loadingText
+            loadingText.classList.remove("animate__lightSpeedInLeft");
+            loadingText.classList.remove("animate__animated");
+
+            // Tambahkan animasi keluar pada loadingText
+            loadingText.classList.add("animate__lightSpeedOutRight");
+            loadingText.classList.add("animate__animated");
+
+            // Tambahkan animasi fadeOut pada spinner
+            spinner.classList.add("animate__fadeOut");
+            spinner.classList.add("animate__animated");
+
+            // Tunggu sampai animasi selesai (1 detik) dan sembunyikan spinner
+            setTimeout(function() {
+                console.log("Sembunyikan spinner dan teks setelah animasi selesai...");
+                spinner.style.visibility = "hidden"; // Membuat spinner tidak terlihat
+                spinner.style.opacity = 0; // Membuat spinner transparan
+                spinner.style.display = "none"; // Menyembunyikan spinner
+
+                loadingText.style.visibility = "hidden"; // Membuat text tidak terlihat
+                loadingText.style.opacity = 0; // Membuat text transparan
+                loadingText.style.display = "none"; // Menyembunyikan text
+
+                spinnerContainer.style.display = "none"; // Menyembunyikan div spinner-container
+
+                // Reset animasi pada loadingText
+                loadingText.classList.remove("animate__lightSpeedOutRight");
+                loadingText.classList.remove("animate__animated");
+
+                // Reset animasi pada spinner
+                spinner.classList.remove("animate__fadeOut");
+                spinner.classList.remove("animate__animated");
+
+                console.log('Animasi selesai, class animasi direset');
+            }, 1000); // durasi animasi
+
+            // Reset status spinner
+            localStorage.setItem('spinnerShown', 'true');
+            console.log('localStorage reset');
+            console.log('Spinner telah di hide');
+        };
+
+        // Panggil `showSpinner` saat halaman dimuat
+        showSpinner();
+
+        // Simulasi penggunaan spinner
+        setTimeout(function() {
+            hideSpinner();
+        }, 3000); // Spinner akan hilang setelah 3 detik
+        function resetActiveClass() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach((item) => {
+                item.classList.remove('active');
+            });
+        }
+        const sidebar = document.getElementById('sidebarnav');
+
+        sidebar.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.hasAttribute('data-file')) {
+                resetActiveClass();
+                e.target.classList.add('active');
+            }
+        });
     </script>
 
 </body>

@@ -53,7 +53,9 @@ Route::get('/siswa', [StaffTataUsahaController::class, 'getSiswaAll']);
 
 // ENDSISWA
 Route::get('/manajemen-kelas', 'StaffTataUsahaController@manajemenKelas');
+
+
+
 Route::get('/manajemen-ekstrakurikuler', 'StaffTataUsahaController@manajemenEkstrakurikuler');
 Route::get('/manajemen-keuangan', 'StaffTataUsahaController@manajemenKeuangan');
 Route::get('/manajemen-laporan', 'StaffTataUsahaController@manajemenLaporan');
-// Route::get('/dashboard', 'StaffTataUsahaController@dashboard');

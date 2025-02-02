@@ -134,7 +134,10 @@ class StaffTataUsahaController extends Controller
             'absensiGuruCount',
             'sppData',
             'gajiData',
-            'subjects', 'subjectCounts', 'teachers', 'guruCounts',  // guru
+            'subjects',
+            'subjectCounts',
+            'teachers',
+            'guruCounts',  // guru
             'siswaCountPerDay',
             'guruCountPerDay'
         ));
@@ -497,14 +500,37 @@ class StaffTataUsahaController extends Controller
             return response()->json(['message' => 'Siswa tidak ditemukan.'], 404);
         }
     }
-
+    //KELAS
     public function manajemenKelas()
     {
         try {
-            $data = SchoolClass::all();
-            return view('resource.manajemen-kelas.index', compact('data'));
+            // Ambil siswa beserta kelas dan nilai mereka
+            $students = Student::with(['class', 'grades'])->get();
+
+            // // Hitung rata-rata nilai untuk setiap siswa
+            // $ranking = $students->map(function ($student) {
+            //     $averageGrade = $student->grades->avg('grade');
+            //     return [
+            //         'name' => $student->name,
+            //         'class' => $student->class->name ?? 'N/A',
+            //         'average_grade' => $averageGrade,
+            //     ];
+            // })->sortByDesc('average_grade')->values()->take(5);
+
+            // Ambil data yang diperlukan untuk card statistik
+            $jumlahSiswa = Student::count();
+            $jumlahGuru = Teacher::count();
+            $jumlahKelas = SchoolClass::count();
+            // Asumsi Anda memiliki model Faculty atau sejenisnya
+            $jumlahFakultas = 3;  // default untuk kasus ini
+
+            // Kelas yang ada untuk ditampilkan
+            $schoolClasses = SchoolClass::all();
+
+            // Mengembalikan tampilan dengan data siswa dan ranking
+            return view('resource.manajemen-kelas.index', compact('students', 'schoolClasses',  'jumlahSiswa', 'jumlahGuru', 'jumlahKelas', 'jumlahFakultas'));
         } catch (\Exception $e) {
-            return view('error', ['message' => $e->getMessage()]);
+            return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 
